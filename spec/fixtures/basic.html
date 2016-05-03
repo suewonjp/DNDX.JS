@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Basic Fixture</title>
+    <style>
+        .draggable {
+            width: 25px;
+            height: 25px;
+        }
+        .droppable {
+            width: 90px;
+            height: 75px;
+            color: #fff;
+            padding: 10px;
+        }
+        .row1 {
+            background: #aaa;
+        }
+        .row2 {
+            background: #777;
+        }
+        .row3 {
+            background: #333;
+        }
+        #draggable0 {
+            background: moccasin;
+        }
+        #draggable1 {
+            background: aquamarine;
+        }
+    </style>
+</head>
+
+<body>
+
+    <table>
+        <tr>
+            <td><div class="droppable row1 col1">Row 1, Col 1</div></td>
+            <td><div class="droppable row1 col2">Row 1, Col 2</div></td>
+            <td><div class="droppable row1 col3">Row 1, Col 3</div></td>
+        </tr>
+        <tr>
+            <td><div class="droppable row2 col1">Row 2, Col 1</div></td>
+            <td><div class="droppable row2 col2">Row 2, Col 2</div></td>
+            <td><div class="droppable row2 col3">Row 2, Col 3</div></td>
+        </tr>
+        <tr>
+            <td><div class="droppable row3 col1">Row 3, Col 1</div></td>
+            <td><div class="droppable row3 col2">Row 3, Col 2</div></td>
+            <td><div class="droppable row3 col3">Row 3, Col 3</div></td>
+        </tr>
+    </table>
+
+    <br/><br/><br/>
+
+    <div id="draggable0" class="draggable"></div>
+    <br/>
+    <div id="draggable1" class="draggable"></div>
+
+</body>
+</html>

@@ -1,0 +1,68 @@
+body {
+    font: 62.5% "Trebuchet MS", sans-serif;
+    margin: 5px, 50px, auto, 50px;
+}
+
+#header {
+    width: 100%;
+    height: 80px;
+    background-color: aliceblue;
+}
+
+#menu-container {
+    float: right;
+    margin: auto 10px auto auto;
+}
+
+#visualcue-menu {
+    width: 150px;
+}
+
+.draggable {
+    width: 65px;
+    height: 25px;
+    background:gold;
+    margin: 5px auto auto 5px;
+}
+
+.droppable {
+    width: 90px;
+    height: 75px;
+    color: #fff;
+    padding: 10px;
+    margin: 15px;
+}
+
+.row1 {
+    background-color: #aaa;
+}
+.row2 {
+    background-color: #777;
+}
+.row3 {
+    background-color: #333;
+}
+
+#draggable0 {
+    background-color: moccasin;
+    z-index: 10000;
+}
+#draggable1 {
+    background-color: aquamarine;
+    z-index: 10000;
+}
+
+#dialog-link {
+    padding: .4em 1em .4em 20px;
+    text-decoration: none;
+    position: relative;
+}
+
+#dialog-link span.ui-icon {
+    margin: 0 5px 0 0;
+    position: absolute;
+    left: .2em;
+    top: 50%;
+    margin-top: -8px;
+}
+
