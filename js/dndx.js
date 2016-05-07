@@ -332,24 +332,24 @@ var dndx = null;
                 break;
             }
         },
-        visualcueFlash : function(eventType, $srcObj, $tgtObj, srcSelector, tgtSelector, e) {
-            switch (eventType) {
-            case "dropactivate":
-                $tgtObj.addClass("dndx-visualcue-flash"); 
-                break;
-            case "dropdeactivate":
-                $tgtObj.removeClass("dndx-visualcue-flash dndx-visualcue-gradient");
-                break;
-            case "dropover": 
-                $tgtObj.removeClass("dndx-visualcue-flash");
-                $tgtObj.addClass("dndx-visualcue-gradient");
-                break;
-            case "dropout":
-                $tgtObj.addClass("dndx-visualcue-flash");
-                $tgtObj.removeClass("dndx-visualcue-gradient");
-                break;
-            }
-        },
+        //visualcueFlash : function(eventType, $srcObj, $tgtObj, srcSelector, tgtSelector, e) {
+            //switch (eventType) {
+            //case "dropactivate":
+                //$tgtObj.addClass("dndx-visualcue-flash"); 
+                //break;
+            //case "dropdeactivate":
+                //$tgtObj.removeClass("dndx-visualcue-flash dndx-visualcue-gradient");
+                //break;
+            //case "dropover": 
+                //$tgtObj.removeClass("dndx-visualcue-flash");
+                //$tgtObj.addClass("dndx-visualcue-gradient");
+                //break;
+            //case "dropout":
+                //$tgtObj.addClass("dndx-visualcue-flash");
+                //$tgtObj.removeClass("dndx-visualcue-gradient");
+                //break;
+            //}
+        //},
     };
 
     function triggerException(msg) {
