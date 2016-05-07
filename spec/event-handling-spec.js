@@ -5,8 +5,8 @@
 describe("EVENT-HANDLING-M0CKING", function() {
     var srcDataKey = dndx().sourceDataKeyName(), dataStore = null;
 
-    function grabPair(e, ui) {
-        var $src = ui.draggable, $tgt = $(e.target), srcSelector = $src.data(srcDataKey), pair;
+    function grabPair($src, $tgt) {
+        var srcSelector = $src.data(srcDataKey), pair;
         if (srcSelector in dataStore.pairs === false || !$src.is(srcSelector))
             return null;
         for (var tgtSelector in dataStore.pairs[srcSelector]) {
@@ -24,7 +24,7 @@ describe("EVENT-HANDLING-M0CKING", function() {
     var eventContext = null;
 
     var dropActivateHandler = function(e, ui) {
-        var pair = grabPair(e, ui);
+        var pair = grabPair(ui.draggable, $(e.target));
         if (pair) {
             eventContext = eventContext || { pairs:[], };
             if (eventContext.pairs.indexOf(pair) === -1) {
@@ -41,7 +41,7 @@ describe("EVENT-HANDLING-M0CKING", function() {
         if (!eventContext) {
             return false;
         }
-        var pair = grabPair(e, ui);
+        var pair = grabPair(ui.draggable, $(e.target));
         if (pair && pair !== eventContext.focusedPair) {
             var iii = eventContext.pairs.indexOf(pair);
             if (iii > -1) {
@@ -58,10 +58,11 @@ describe("EVENT-HANDLING-M0CKING", function() {
     };
 
     var dropOverHandler = function(e, ui) {
-        var pair = grabPair(e, ui);
+        var pair = grabPair(ui.draggable, $(e.target));
         if (pair) {
             var hitTargets = eventContext.hitTargets || (eventContext.hitTargets = createUniqueSequence()),
-                head = hitTargets.front(), $head = $(head), $tgt = $(e.target);
+                head = hitTargets.front(), $head = $(head), $tgt = $(e.target),
+                prevPair = eventContext.focusedPair;
 
             eventContext.$src = ui.draggable;
             eventContext.focusedPair = pair;
@@ -73,8 +74,8 @@ describe("EVENT-HANDLING-M0CKING", function() {
                     hitTargets.push(e.target);
                     return false;
                 }
-                pair.visualcue("dropout", eventContext.$src, $head, pair.srcSelector, pair.tgtSelector);
-                pair.cbOut("dropout", eventContext.$src, $head, pair.srcSelector, pair.tgtSelector);
+                prevPair.visualcue("dropout", eventContext.$src, $head, prevPair.srcSelector, prevPair.tgtSelector);
+                prevPair.cbOut("dropout", eventContext.$src, $head, prevPair.srcSelector, prevPair.tgtSelector);
             }
 
             pair.visualcue(e.type, eventContext.$src, $tgt, pair.srcSelector, pair.tgtSelector, e);
@@ -110,6 +111,7 @@ describe("EVENT-HANDLING-M0CKING", function() {
                 }
 
                 head = hitTargets.front(), $head = $(head);
+                eventContext.focusedPair = pair = grabPair(eventContext.$src, $head);
                 pair.visualcue("dropover", eventContext.$src, $head, pair.srcSelector, pair.tgtSelector, e);
                 pair.cbOver("dropover", eventContext.$src, $head, pair.srcSelector, pair.tgtSelector, e);
             }
@@ -118,7 +120,10 @@ describe("EVENT-HANDLING-M0CKING", function() {
     };
 
     var dropHandler = function(e, ui) {
-        var pair = grabPair(e, ui);
+        if (!eventContext.focusedPair) {
+            return false;
+        }
+        var pair = grabPair(ui.draggable, $(e.target));
         if (pair) {
             var hitTargets = eventContext.hitTargets, head = hitTargets.front(), $head = $(head);
             if (head === e.target) {
