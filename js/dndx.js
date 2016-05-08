@@ -465,7 +465,9 @@ var dndx = null;
                 refreshPair(this.srcSelector, this.tgtSelector);
             }
             if (this.source) {
-                refreshPairs(this.source);
+                var tmp = {};
+                tmp[this.srcSelector] = this.source;
+                refreshPairs(tmp);
             }
             else {
                 refreshPairs(dataStore.pairs);
