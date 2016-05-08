@@ -23,6 +23,17 @@ describe("EVENT-HANDLING-M0CKING", function() {
 
     var eventContext = null;
 
+    function rejectTarget(tgt, ec) {
+        if (!ec)
+            return true;
+        var c = (ec.blacklist && ec.blacklist.length) || 0, i;
+        for (i=0; i<c; ++i) {
+            if (tgt === ec.blacklist[i])
+                return true;
+        }
+        return false;
+    }
+
     var dropActivateHandler = function(e, ui) {
         var pair = grabPair(ui.draggable, $(e.target));
         if (pair) {
@@ -30,6 +41,15 @@ describe("EVENT-HANDLING-M0CKING", function() {
             if (eventContext.pairs.indexOf(pair) === -1) {
                 eventContext.pairs.push(pair);
                 var $tgtObj = $(pair.tgtSelector).not(".ui-draggable-dragging");
+                if (pair.cbCheckPair instanceof Function) {
+                    eventContext.blacklist = eventContext.blacklist || createUniqueSequence();
+                    $tgtObj = $tgtObj.not(function (idx, elem) {
+                        if (!pair.cbCheckPair(ui.draggable, $(elem), pair.srcSelector, pair.tgtSelector)) {
+                            eventContext.blacklist.pushFront(elem);
+                            return true;
+                        }
+                    });
+                }
                 pair.visualcue(e.type, ui.draggable, $tgtObj, pair.srcSelector, pair.tgtSelector, e);
                 pair.cbActivate(e.type, ui.draggable, $tgtObj, pair.srcSelector, pair.tgtSelector, e);
             }
@@ -46,7 +66,9 @@ describe("EVENT-HANDLING-M0CKING", function() {
             var iii = eventContext.pairs.indexOf(pair);
             if (iii > -1) {
                 eventContext.pairs.splice(iii, 1);
-                var $tgtObj = $(pair.tgtSelector);
+                var $tgtObj = $(pair.tgtSelector).filter(function() {
+                    return ! rejectTarget(this, eventContext);
+                });
                 pair.visualcue(e.type, ui.draggable, $tgtObj, pair.srcSelector, pair.tgtSelector);
                 pair.cbDeactivate(e.type, ui.draggable, $tgtObj, pair.srcSelector, pair.tgtSelector);
                 if (eventContext.pairs.length === 0) {
@@ -58,6 +80,8 @@ describe("EVENT-HANDLING-M0CKING", function() {
     };
 
     var dropOverHandler = function(e, ui) {
+        if (rejectTarget(e.target, eventContext))
+            return false;
         var pair = grabPair(ui.draggable, $(e.target));
         if (pair) {
             var hitTargets = eventContext.hitTargets || (eventContext.hitTargets = createUniqueSequence()),
@@ -87,6 +111,8 @@ describe("EVENT-HANDLING-M0CKING", function() {
     };
 
     var dropOutHandler = function(e, ui) {
+        if (rejectTarget(e.target, eventContext))
+            return false;
         if (!eventContext) {
             return false;
         }
@@ -120,6 +146,8 @@ describe("EVENT-HANDLING-M0CKING", function() {
     };
 
     var dropHandler = function(e, ui) {
+        if (rejectTarget(e.target, eventContext))
+            return false;
         if (!eventContext.focusedPair) {
             return false;
         }
@@ -432,24 +460,24 @@ describe("EVENT-HANDLING-M0CKING", function() {
 
             dndx(srcSelector, tgtSelector).disable(); // Disable a specific pair
 
-            // Simuate dropactivate events
+            // Simulate dropactivate events
             this.simulateDropActivateCalls(srcSelector);
             expect(eventContext.pairs.length).toBe(2);
             expect(this.visualcue).toHaveBeenCalledTimes(2);
             expect(this.onactivate).toHaveBeenCalledTimes(2);
 
-            // Simuate dropover events
+            // Simulate dropover events
             this.visualcue.calls.reset();
             this.simulateDropOverCall(this.tgtObjs[0]);
             expect(this.visualcue).not.toHaveBeenCalled();
             expect(this.onover).not.toHaveBeenCalled();
 
-            // Simuate drop events
+            // Simulate drop events
             this.simulateDropCall(this.tgtObjs[0]);
             expect(this.visualcue).not.toHaveBeenCalled();
             expect(this.ondrop).not.toHaveBeenCalled();
 
-            // Simuate dropdeactivate events
+            // Simulate dropdeactivate events
             this.simulateDropDeactivateCalls();
             expect(this.visualcue).toHaveBeenCalledTimes(2);
             expect(this.ondeactivate).toHaveBeenCalledTimes(2);
@@ -553,6 +581,93 @@ describe("EVENT-HANDLING-M0CKING", function() {
             this.simulateDropDeactivateCalls();
             expect(this.visualcue).toHaveBeenCalledTimes(4);
             //*****/
+        });
+    });
+
+    describe("Checking Pair Objects", function() {
+        beforeEach(function() {
+            this.rejectRow1 = function($src, $tgt) {
+                return !$tgt.is(".row1");
+            };
+
+            spyOn(this, "rejectRow1").and.callThrough();
+        });
+
+        it("doesn't define a default callback for checking pair objects", function() {
+            var ds = dndx().dataStore();
+            expect(ds.protoPair.cbCheckPair).not.toEqual(jasmine.anything());
+
+            function cb() {}
+            dndx().oncheckpair(cb);
+            expect(ds.protoPair.cbCheckPair).toBe(cb);
+        });
+
+        it("calls the callback and maintains the blacklist", function() {
+            var srcSelector = "#draggable0";
+
+            dndx(srcSelector)
+                .targets(".row1").ondeactivate("fallback")
+                .targets(".row2").ondeactivate("fallback")
+                .targets(".row3").ondeactivate("fallback");
+
+            dndx(srcSelector)
+                .ondeactivate(function(eventType, $srcObj, $tgtObj, srcSelector, tgtSelector, e) {
+                    expect($tgtObj.is(".row1")).toBe(false);
+                })
+                .oncheckpair(this.rejectRow1);
+
+            this.simulateDropActivateCalls(srcSelector);
+            expect(eventContext.pairs.length).toBe(3);
+            // The callback should be called for all target objects
+            expect(this.rejectRow1).toHaveBeenCalledTimes(9);
+            // The blacklist contains 3 objects because we reject objects with the class ".row1" only
+            expect(eventContext.blacklist.length).toBe(3);
+
+            this.simulateDropDeactivateCalls();
+
+            dndx(srcSelector)
+                .targets(".row1").ondeactivate(this.ondeactivate)
+                .targets(".row2").ondeactivate(this.ondeactivate)
+                .targets(".row3").ondeactivate(this.ondeactivate);
+        });
+
+        it("calls the callback for over/out/drop events and rejects objects in the blacklist", function() {
+            var srcSelector = "#draggable0", tgt;
+
+            dndx(srcSelector)
+                .oncheckpair(this.rejectRow1);
+
+            this.simulateDropActivateCalls(srcSelector);
+
+            //***** Confirm that an object in the blacklist is rejected
+            tgt = $(".row1.col1")[0];
+            expect(eventContext.blacklist.indexOf(tgt)).not.toEqual(-1);
+
+            this.simulateDropOverCall(tgt);
+            expect(this.onover).not.toHaveBeenCalled();
+            this.simulateDropOutCall(tgt);
+            expect(this.onout).not.toHaveBeenCalled();
+
+            this.simulateDropOverCall(tgt);
+            this.simulateDropCall(tgt);
+            expect(this.ondrop).not.toHaveBeenCalled();
+            //*****/
+
+            //***** Confirm that an object NOT in the blacklist is accepted
+            tgt = $(".row2.col1")[0];
+            expect(eventContext.blacklist.indexOf(tgt)).toEqual(-1);
+
+            this.simulateDropOverCall(tgt);
+            expect(this.onover).toHaveBeenCalledTimes(1);
+            this.simulateDropOutCall(tgt);
+            expect(this.onout).toHaveBeenCalledTimes(1);
+
+            this.simulateDropOverCall(tgt);
+            this.simulateDropCall(tgt);
+            expect(this.ondrop).toHaveBeenCalledTimes(1);
+            //*****/
+
+            this.simulateDropDeactivateCalls();
         });
     });
 

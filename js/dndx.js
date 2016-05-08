@@ -434,6 +434,11 @@ var dndx = null;
             return this;
         };
 
+        apiOwner.oncheckpair = function(cb) {
+            assignCallback(this.pair, this.source, "cbCheckPair", cb);
+            return this;
+        };
+
         apiOwner.onconflict = function(cb) {
             assignCallback(this.pair, this.source, "cbConflict", cb, noop);
             return this;
@@ -571,6 +576,17 @@ var dndx = null;
 
         var className = "." + tgtClassName, eventContext = null;
 
+        function rejectTarget(tgt, ec) {
+            if (!ec)
+                return true;
+            var c = (ec.blacklist && ec.blacklist.length) || 0, i;
+            for (i=0; i<c; ++i) {
+                if (tgt === ec.blacklist[i])
+                    return true;
+            }
+            return false;
+        }
+
         $("body").off(".dndx")
         .on("dropactivate.dndx", className, function(e, ui) {
             var pair = grabPair(ui.draggable, $(e.target));
@@ -579,6 +595,15 @@ var dndx = null;
                 if (eventContext.pairs.indexOf(pair) === -1) {
                     eventContext.pairs.push(pair);
                     var $tgtObj = $(pair.tgtSelector).not(".ui-draggable-dragging");
+                    if (pair.cbCheckPair instanceof Function) {
+                        eventContext.blacklist = eventContext.blacklist || createUniqueSequence();
+                        $tgtObj = $tgtObj.not(function (idx, elem) {
+                            if (!pair.cbCheckPair(ui.draggable, $(elem), pair.srcSelector, pair.tgtSelector)) {
+                                eventContext.blacklist.pushFront(elem);
+                                return true;
+                            }
+                        });
+                    }
                     pair.visualcue(e.type, ui.draggable, $tgtObj, pair.srcSelector, pair.tgtSelector, e);
                     pair.cbActivate(e.type, ui.draggable, $tgtObj, pair.srcSelector, pair.tgtSelector, e);
                 }
@@ -594,7 +619,9 @@ var dndx = null;
                 var iii = eventContext.pairs.indexOf(pair);
                 if (iii > -1) {
                     eventContext.pairs.splice(iii, 1);
-                    var $tgtObj = $(pair.tgtSelector);
+                    var $tgtObj = $(pair.tgtSelector).filter(function() {
+                        return ! rejectTarget(this, eventContext);
+                    });
                     pair.visualcue(e.type, ui.draggable, $tgtObj, pair.srcSelector, pair.tgtSelector);
                     pair.cbDeactivate(e.type, ui.draggable, $tgtObj, pair.srcSelector, pair.tgtSelector);
                     if (eventContext.pairs.length === 0) {
@@ -605,6 +632,8 @@ var dndx = null;
             return false;
         })
         .on("dropover.dndx", className, function(e, ui) {
+            if (rejectTarget(e.target, eventContext))
+                return false;
             var pair = grabPair(ui.draggable, $(e.target));
             if (pair) {
                 var hitTargets = eventContext.hitTargets || (eventContext.hitTargets = createUniqueSequence()),
@@ -633,6 +662,8 @@ var dndx = null;
             return false;
         })
         .on("dropout.dndx", className, function(e, ui) {
+            if (rejectTarget(e.target, eventContext))
+                return false;
             if (!eventContext) {
                 return false;
             }
@@ -665,6 +696,8 @@ var dndx = null;
             return false;
         })
         .on("drop.dndx", className, function(e, ui) {
+            if (rejectTarget(e.target, eventContext))
+                return false;
             if (!eventContext.focusedPair) {
                 return false;
             }
