@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>DNDX.JS DEMO</title>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.11.4/themes/south-street/jquery-ui.css">
+    <link rel="stylesheet" href="css/dndx.css">
+    <link rel="stylesheet" href="demo/styles.css">
+
+    <script src="https://code.jquery.com/jquery-1.12.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+    <script src="js/dndx.js"></script>
+</head>
+
+<body>
+    <div id="tabs">
+        <ul>
+            <li><a href="#basic">Basic</a></li>
+            <li><a href="#list">List</a></li>
+            <li><a href="#pictures">Pictures</a></li>
+        </ul>
+
+        <div id="basic">
+            <div class="header">
+                <div class="menu-container">
+                    <h2>Select Visualcue</h2>
+                    <select id="basic-visualcue-menu">
+                        <option>Overlay</option>
+                        <option>Swing</option>
+                        <option>Exterior</option>
+                        <!--<option>Flash</option>-->
+                        <option>Nothing</option>
+                    </select>
+                </div>
+            </div>
+
+            <table>
+                <tr>
+                    <td><div class="droppable row1 col1">Row 1, Col 1<br>(Drop Here)</div></td>
+                    <td><div class="droppable row1 col2">Row 1, Col 2<br>(Drop Here)</div></td>
+                    <td><div class="droppable row1 col3">Row 1, Col 3<br>(Drop Here)</div></td>
+                    <td><input type="checkbox" class="check-to-reject-row">Can't Drop This Row</input></td>
+                </tr>
+                <tr>
+                    <td><div class="droppable row2 col1">Row 2, Col 1<br>(Drop Here)</div></td>
+                    <td><div class="droppable row2 col2">Row 2, Col 2<br>(Drop Here)</div></td>
+                    <td><div class="droppable row2 col3">Row 2, Col 3<br>(Drop Here)</div></td>
+                    <td><input type="checkbox" class="check-to-reject-row">Can't Drop This Row</input></td>
+                </tr>
+                <tr>
+                    <td><div class="droppable row3 col1">Row 3, Col 1<br>(Drop Here)</div></td>
+                    <td><div class="droppable row3 col2">Row 3, Col 2<br>(Drop Here)</div></td>
+                    <td><div class="droppable row3 col3">Row 3, Col 3<br>(Drop Here)</div></td>
+                    <td><input type="checkbox" class="check-to-reject-row">Can't Drop This Row</input></td>
+                </tr>
+            </table>
+
+            <br/><hr/>
+
+            <div>
+                <button id="basic-new-src-btn"><span class="ui-icon ui-icon-plus"></span></button>
+                <p><a href="#" id="basic-dialog-link" class="ui-state-default ui-corner-all"><span class="ui-icon ui-icon-newwin"></span>Open Dialog</a></p>
+                <br/><br/>
+                <div id="draggable0" class="draggable"><span>0 (Drag Me)</span></div>
+                <div id="draggable1" class="draggable"><span>1 (Drag Me</sapn></div>
+            </div>
+
+            <div id="basic-dialog" title="Dialog">
+                <p style="background-color:lightgray">Drop Here!<br>Drop Here!<br>Drop Here!</p>
+                <br/>
+                <input type="checkbox">Do Not Resolve Conflict</input>
+            </div>
+        </div> <!--"basic"-->
+
+        <div id="list">
+            Phasellus mattis tincidunt nibh. Cras orci urna, blandit id, pretium vel, aliquet ornare, felis. Maecenas scelerisque sem non nisl. Fusce sed lorem in enim dictum bibendum.
+        </div> <!--"list"-->
+
+        <div id="pictures">
+            Nam dui erat, auctor a, dignissim quis, sollicitudin eu, felis. Pellentesque nisi urna, interdum eget, sagittis et, consequat vestibulum, lacus. Mauris porttitor ullamcorper augue.
+        </div> <!--"pictures"-->
+    </div> <!--<div id="tabs">-->
+
+    <script src="demo/index.js"></script>
+    <script src="demo/basic.js"></script>
+    <script src="demo/list.js"></script>
+    <script src="demo/pictures.js"></script>
+</body>
+</html>
