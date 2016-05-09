@@ -657,6 +657,7 @@ var dndx = null;
                     var selected = pair.cbConflict(ui.draggable, $head, $tgt) || $head;
                     if (selected[0] === head) {
                         hitTargets.push(e.target);
+                        eventContext.focusedPair = prevPair;
                         return false;
                     }
                     prevPair.visualcue("dropout", eventContext.$src, $head, prevPair.srcSelector, prevPair.tgtSelector);
