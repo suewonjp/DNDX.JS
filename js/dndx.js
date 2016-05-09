@@ -354,10 +354,6 @@ var dndx = null;
         //},
     };
 
-    function triggerException(msg) {
-        throw new Error(msg);
-    }
-
     function builtinVisualcue(name) {
         var vcName = "visualcue" + name;
         if (vcName in builtinVisualcueOwner === false) {
@@ -489,6 +485,10 @@ var dndx = null;
         };
 
         apiOwner.newPair = function(srcSelector, tgtSelector) {
+            srcSelector = srcSelector || this.srcSelector;
+            if (!srcSelector) {
+                triggerException("Source selector should be specified!");
+            }
             validateSelectors(srcSelector, tgtSelector);
             if (this.srcSelector && this.tgtSelector) {
                 var srcPair = dataStore.pairs[this.srcSelector][this.tgtSelector],
@@ -729,6 +729,10 @@ var dndx = null;
 
     function unbindEventHandlers() {
         $("body").off(".dndx");
+    }
+
+    function triggerException(msg) {
+        throw new Error(msg);
     }
 
     function validateSelector(selector) {

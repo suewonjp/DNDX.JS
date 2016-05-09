@@ -204,6 +204,12 @@ describe("DNDX-CORE", function() {
             dndx("#draggable0", ".row1").newPair("#draggable3", ".row1").ondrop(function() {});
             srcPair = dndx("#draggable0", ".row1").pair, newPair = dndx("#draggable3", ".row1").pair;
             expect(srcPair).not.toEqual(newPair);
+
+            // Following invocation doesn't make sense, but let's confirm nothing happens anyway
+            TEST_UTILS.objectsEqual(newPair, dndx("#draggable3", ".row1").newPair("#draggable3", ".row1").pair);
+
+            newPair = dndx("#draggable0", ".row1").newPair(null, ".row4").pair;// same as .newPair("#draggable0", ".row4")
+            TEST_UTILS.objectsEqual(newPair, dndx("#draggable0", ".row4").pair);
         });
 
         it("disables or enables pairs", function() {
