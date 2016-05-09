@@ -465,6 +465,14 @@ var dndx = null;
             return this;
         };
 
+        apiOwner.nullify = function() {
+            if (this.pair) {
+                this.pair.visualcue = builtinVisualcue("Nothing");
+                this.pair.cbActivate = this.pair.cbDeactivate = this.pair.cbOver = this.pair.cbOut = this.pair.cbDrop = noop;
+            }
+            return this;
+        };
+
         apiOwner.refresh = function() {
             if (this.srcSelector && this.tgtSelector) {
                 refreshPair(this.srcSelector, this.tgtSelector);
@@ -632,8 +640,9 @@ var dndx = null;
             return false;
         })
         .on("dropover.dndx", className, function(e, ui) {
-            if (rejectTarget(e.target, eventContext))
+            if (rejectTarget(e.target, eventContext)) {
                 return false;
+            }
             var pair = grabPair(ui.draggable, $(e.target));
             if (pair) {
                 var hitTargets = eventContext.hitTargets || (eventContext.hitTargets = createUniqueSequence()),
@@ -645,7 +654,7 @@ var dndx = null;
 
                 if (head && head !== e.target) {
                     // Resolve conflicts between multiple hits
-                    var selected = pair.cbConflict(ui.draggable, $head, $tgt);
+                    var selected = pair.cbConflict(ui.draggable, $head, $tgt) || $head;
                     if (selected[0] === head) {
                         hitTargets.push(e.target);
                         return false;
@@ -662,8 +671,9 @@ var dndx = null;
             return false;
         })
         .on("dropout.dndx", className, function(e, ui) {
-            if (rejectTarget(e.target, eventContext))
+            if (rejectTarget(e.target, eventContext)) {
                 return false;
+            }
             if (!eventContext) {
                 return false;
             }
@@ -678,7 +688,7 @@ var dndx = null;
                     if (hitTargets.length > 1) {
                         var i, c, selected = $(hitTargets[0]);
                         for (i=1,c=hitTargets.length; i<c; ++i) {
-                            selected = pair.cbConflict(eventContext.$src, selected, $(hitTargets[i]));
+                            selected = pair.cbConflict(eventContext.$src, selected, $(hitTargets[i])) || selected;
                         }
                         hitTargets.pushFront(selected[0]);
                     }
@@ -696,8 +706,9 @@ var dndx = null;
             return false;
         })
         .on("drop.dndx", className, function(e, ui) {
-            if (rejectTarget(e.target, eventContext))
+            if (rejectTarget(e.target, eventContext)) {
                 return false;
+            }
             if (!eventContext.focusedPair) {
                 return false;
             }

@@ -80,8 +80,9 @@ describe("EVENT-HANDLING-M0CKING", function() {
     };
 
     var dropOverHandler = function(e, ui) {
-        if (rejectTarget(e.target, eventContext))
+        if (rejectTarget(e.target, eventContext)) {
             return false;
+        }
         var pair = grabPair(ui.draggable, $(e.target));
         if (pair) {
             var hitTargets = eventContext.hitTargets || (eventContext.hitTargets = createUniqueSequence()),
@@ -93,7 +94,7 @@ describe("EVENT-HANDLING-M0CKING", function() {
 
             if (head && head !== e.target) {
                 // Resolve conflicts between multiple hits
-                var selected = pair.cbConflict(ui.draggable, $head, $tgt);
+                var selected = pair.cbConflict(ui.draggable, $head, $tgt) || $head;
                 if (selected[0] === head) {
                     hitTargets.push(e.target);
                     return false;
@@ -111,8 +112,9 @@ describe("EVENT-HANDLING-M0CKING", function() {
     };
 
     var dropOutHandler = function(e, ui) {
-        if (rejectTarget(e.target, eventContext))
+        if (rejectTarget(e.target, eventContext)) {
             return false;
+        }
         if (!eventContext) {
             return false;
         }
@@ -127,7 +129,7 @@ describe("EVENT-HANDLING-M0CKING", function() {
                 if (hitTargets.length > 1) {
                     var i, c, selected = $(hitTargets[0]);
                     for (i=1,c=hitTargets.length; i<c; ++i) {
-                        selected = pair.cbConflict(eventContext.$src, selected, $(hitTargets[i]));
+                        selected = pair.cbConflict(eventContext.$src, selected, $(hitTargets[i])) || selected;
                     }
                     hitTargets.pushFront(selected[0]);
                 }
@@ -146,8 +148,9 @@ describe("EVENT-HANDLING-M0CKING", function() {
     };
 
     var dropHandler = function(e, ui) {
-        if (rejectTarget(e.target, eventContext))
+        if (rejectTarget(e.target, eventContext)) {
             return false;
+        }
         if (!eventContext.focusedPair) {
             return false;
         }
@@ -666,6 +669,30 @@ describe("EVENT-HANDLING-M0CKING", function() {
             this.simulateDropCall(tgt);
             expect(this.ondrop).toHaveBeenCalledTimes(1);
             //*****/
+
+            this.simulateDropDeactivateCalls();
+        });
+    });
+
+    describe("Checking .nullify() API", function() {
+        it("nullifies all visualcues and callbacks", function() {
+            var srcSelector = "#draggable1", tgtSelector = ".row2",
+                tgt = $(".row2.col1")[0], pair;
+            pair = dndx(srcSelector, tgtSelector).pair;
+            expect(pair.visualcue).toBe(this.visualcue);
+            expect(pair.cbDrop).toBe(this.ondrop);
+
+            dndx(srcSelector, tgtSelector).nullify();
+
+            this.simulateDropActivateCalls(srcSelector);
+            expect(this.visualcue).toHaveBeenCalledTimes(2);
+            expect(this.onactivate).toHaveBeenCalledTimes(2);
+
+            this.simulateDropOverCall(tgt);
+            expect(this.onover).not.toHaveBeenCalled();
+
+            this.simulateDropCall(tgt);
+            expect(this.ondrop).not.toHaveBeenCalled();
 
             this.simulateDropDeactivateCalls();
         });
