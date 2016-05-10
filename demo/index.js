@@ -1,12 +1,45 @@
+/*eslint no-undef:0*/
+/*eslint no-unused-vars:0*/
 
-//$.fn.extend({
-    //animateCss: function (animationName) {
-        //var animationEnd = "webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend";
-        //$(this).addClass("animated " + animationName).one(animationEnd, function() {
-            //$(this).removeClass("animated " + animationName);
-        //});
-    //},
-//});
+(function($) {
 
-$("#tabs").tabs();
+    //$.fn.extend({
+        //animateCss: function (animationName) {
+            //var animationEnd = "webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend";
+            //$(this).addClass("animated " + animationName).one(animationEnd, function() {
+                //$(this).removeClass("animated " + animationName);
+            //});
+        //},
+    //});
+
+    function enterDemoScene(id) {
+        switch (id) {
+        case "basic":
+            enterBasicDemoScene($);
+            break;
+        case "list":
+            enterListDemoScene($);
+            break;
+        case "pictures":
+            enterPicturesDemoScene($);
+            break;
+        }
+    }
+
+    $("#tabs").tabs({
+        create: function(e, ui) {
+            createBasicDemoScene($);
+            createListDemoScene($);
+            createPicturesDemoScene($);
+
+            enterDemoScene(ui.panel.attr("id"));
+        },
+        activate: function(e, ui) {
+            enterDemoScene(ui.newPanel.attr("id"));
+        },
+    });
+
+    $("#tabs").tabs("option", "active", 0);
+
+}(jQuery));
 

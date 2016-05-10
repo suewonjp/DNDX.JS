@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <title>DNDX.JS DEMO</title>
+    <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.11.4/themes/south-street/jquery-ui.css">
     <link rel="stylesheet" href="css/dndx.css">
     <link rel="stylesheet" href="demo/styles.css">
@@ -59,21 +60,43 @@
 
             <div>
                 <button id="basic-new-src-btn"><span class="ui-icon ui-icon-plus"></span></button>
-                <p><a href="#" id="basic-dialog-link" class="ui-state-default ui-corner-all"><span class="ui-icon ui-icon-newwin"></span>Open Dialog</a></p>
+                <a href="#" id="basic-dialog-link" class="ui-state-default ui-corner-all"><span class="ui-icon ui-icon-newwin"></span>Open Dialog</a>
                 <br/><br/>
                 <div id="draggable0" class="draggable"><span>0 (Drag Me)</span></div>
-                <div id="draggable1" class="draggable"><span>1 (Drag Me</sapn></div>
+                <div id="draggable1" class="draggable"><span>1 (Drag Me)</span></div>
             </div>
 
             <div id="basic-dialog" title="Dialog">
-                <p style="background-color:lightgray">Drop Here!<br>Drop Here!<br>Drop Here!</p>
+                <p>Drop Here!<br>Drop Here!<br>Drop Here!</p>
                 <br/>
                 <input type="checkbox">Do Not Resolve Conflict</input>
             </div>
         </div> <!--"basic"-->
 
         <div id="list">
-            Phasellus mattis tincidunt nibh. Cras orci urna, blandit id, pretium vel, aliquet ornare, felis. Maecenas scelerisque sem non nisl. Fusce sed lorem in enim dictum bibendum.
+            <div class="flex-container">
+                <div class="prglng-list-container ui-corner-all">
+                    <ul>
+                        <li>JavaScript</li>
+                        <li>Java</li>
+                        <li>C++</li>
+                        <li>Objective C</li>
+                        <li>C</li>
+                        <li>Ruby</li>
+                        <li>Python</li>
+                        <li>PHP</li>
+                        <li>Groovy</li>
+                        <li>Scala</li>
+                    </ul>
+                </div>
+                <div class="prglng-list-container ui-corner-all">
+                    <ul>
+                    </ul>
+                </div>
+                <div class="trashcan-container">
+                    <div class="fa fa-trash fa-3x"></div>
+                </div>
+            </div>
         </div> <!--"list"-->
 
         <div id="pictures">
@@ -81,9 +104,9 @@
         </div> <!--"pictures"-->
     </div> <!--<div id="tabs">-->
 
-    <script src="demo/index.js"></script>
     <script src="demo/basic.js"></script>
     <script src="demo/list.js"></script>
     <script src="demo/pictures.js"></script>
+    <script src="demo/index.js"></script>
 </body>
 </html>
