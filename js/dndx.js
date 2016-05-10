@@ -69,7 +69,7 @@ var dndx = null;
                 appendTo: "body",
             },
             protoDroppableOptions: {
-                greedy: true,
+                //greedy: true,
                 //tolerance: "pointer",
             },
             protoPair: {

@@ -275,7 +275,7 @@ describe("DNDX-CORE", function() {
             for (t=0; t<tgt.length; ++t) {
                 instance = $(tgt[t]).droppable("instance");
                 expect(instance.options).toEqual(jasmine.objectContaining({
-                    greedy:true,
+                    greedy:false,
                 }));
             }
         });
@@ -315,24 +315,24 @@ describe("DNDX-CORE", function() {
             
             instance = $(".row1").droppable("instance");
             expect(instance.options).toEqual(jasmine.objectContaining({
-                greedy:true,
+                greedy:false,
             }));
 
             dndx().droppableOptions();
             expect(instance.options).toEqual(jasmine.objectContaining({
-                greedy:true,
+                greedy:false,
             }));
 
-            dndx().droppableOptions({ greedy:false, });
+            dndx().droppableOptions({ greedy:true, });
             expect(instance.options).toEqual(jasmine.objectContaining({
-                greedy:false, scope:"default",
+                greedy:true, scope:"default",
             }));
 
             dndx("#draggable1", ".row2").droppableOptions({ scope:"tasks", });
 
             instance = $(".row2").droppable("instance");
             expect(instance.options).toEqual(jasmine.objectContaining({
-                greedy:false, scope:"tasks",
+                greedy:true, scope:"tasks",
             }));
         });
 
