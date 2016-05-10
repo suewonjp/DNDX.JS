@@ -362,6 +362,11 @@ var dndx = null;
         return builtinVisualcueOwner[vcName];
     }
 
+    function cleanup() {
+        unbindEventHandlers();
+        apiOwner = dataStore = null;
+    }
+
     // This function defines all APIs (except dndx() function) for the library and associates them to the object 'apiOwner'
     function defineAPIs() {
         apiOwner = {}; // This object owns all public functions of the library
@@ -542,10 +547,11 @@ var dndx = null;
             removePair(this.srcSelector, this.tgtSelector, removeUnderlingObjects);
         };
 
-        apiOwner.destroy = function() {
-            unbindEventHandlers();
-            apiOwner = dataStore = null;
-        };
+        apiOwner.destroy = cleanup;
+        //apiOwner.destroy = function() {
+            //unbindEventHandlers();
+            //apiOwner = dataStore = null;
+        //};
 
         if ($.data(document.body, "dndx-under-inspection")) {
             // DEBUG/TEST METHODS (NOT FOR PRODUCTION USE!!!)
@@ -792,6 +798,8 @@ var dndx = null;
 
         return createChainable(srcSelector, tgtSelector);
     }; 
+
+    dndx.destroy = cleanup;
 
 }(jQuery));
 

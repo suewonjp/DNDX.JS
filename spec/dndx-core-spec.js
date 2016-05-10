@@ -248,7 +248,7 @@ describe("DNDX-CORE", function() {
         });
 
         afterEach(function() {
-            dndx().destroy();
+            dndx.destroy();
         });
     });
 
@@ -351,7 +351,7 @@ describe("DNDX-CORE", function() {
         });
 
         afterEach(function() {
-            dndx().destroy();
+            dndx.destroy();
         });
     });
 
@@ -517,7 +517,7 @@ describe("DNDX-CORE", function() {
         });
 
         afterEach(function() {
-            dndx().destroy();
+            dndx.destroy();
         });
     });
 
@@ -594,7 +594,7 @@ describe("DNDX-CORE", function() {
         });
 
         afterEach(function() {
-            dndx().destroy();
+            dndx.destroy();
         });
     });
 
@@ -667,7 +667,7 @@ describe("DNDX-CORE", function() {
     });
 
     afterAll(function() {
-        dndx().destroy();
+        dndx.destroy();
     });
 
 });
