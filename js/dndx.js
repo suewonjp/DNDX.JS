@@ -402,44 +402,18 @@ var dndx = null;
         };
 
         apiOwner.visualcue = function(param) {
-            if (this.pair) {
-                if (typeof param === "string") {
-                    if (param === "fallback")
-                        delete this.pair.visualcue;
-                    else
-                        this.pair.visualcue = builtinVisualcue(param);
-                }
-                else if (param instanceof Function) {
-                    this.pair.visualcue = param;
-                }
-                else if (param === null) {
-                    this.pair.visualcue = noop; 
-                }
+            var owner = this.pair || (this.source && this.source[srcClassName]) || dataStore.protoPair;
+            if (param === "fallback") {
+                delete owner.visualcue;
             }
-            else if (this.source) {
-                if (typeof param === "string") {
-                    if (param === "fallback")
-                        delete this.source[srcClassName].visualcue;
-                    else
-                        this.source[srcClassName].visualcue = builtinVisualcue(param);
-                }
-                else if (param instanceof Function) {
-                    this.source[srcClassName].visualcue = param;
-                }
-                else if (param === null) {
-                    this.source[srcClassName].visualcue = noop;
-                }
+            else if (typeof param === "string") {
+                owner.visualcue = builtinVisualcue(param);
             }
-            else {
-                if (typeof param === "string") {
-                    dataStore.protoPair.visualcue = builtinVisualcue(param);
-                }
-                else if (param instanceof Function) {
-                    dataStore.protoPair.visualcue = param;
-                }
-                else if (param === null) {
-                    dataStore.protoPair.visualcue = noop;
-                }
+            else if (param instanceof Function) {
+                owner.visualcue = param;
+            }
+            else if (param === null) {
+                owner.visualcue = noop;
             }
             return this;
         };
