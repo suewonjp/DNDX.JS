@@ -7,3 +7,6 @@ function createPicturesDemoScene($) {
 function enterPicturesDemoScene($) {
 }
 
+function leavePicturesDemoScene($) {
+}
+

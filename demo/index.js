@@ -26,6 +26,20 @@
         }
     }
 
+    function leaveDemoScene(id) {
+        switch (id) {
+        case "basic":
+            leaveBasicDemoScene($);
+            break;
+        case "list":
+            leaveListDemoScene($);
+            break;
+        case "pictures":
+            leavePicturesDemoScene($);
+            break;
+        }
+    }
+
     $("#tabs").tabs({
         create: function(e, ui) {
             createBasicDemoScene($);
@@ -35,6 +49,7 @@
             enterDemoScene(ui.panel.attr("id"));
         },
         activate: function(e, ui) {
+            leaveDemoScene(ui.oldPanel.attr("id"));
             enterDemoScene(ui.newPanel.attr("id"));
         },
     });
