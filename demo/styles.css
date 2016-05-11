@@ -106,6 +106,7 @@ body {
 
 .prglng-list-container ul {
     list-style: none;
+    padding: 10px;
 }
 
 .prglng-list-container ul li {
@@ -114,7 +115,7 @@ body {
     padding: 2px;
     border:1px solid #ffc826;
     border-radius: 3px;
-    box-shadow: #B4B5B5 1px 1px 1px;
+    /*box-shadow: #B4B5B5 1px 1px 1px;*/
     background-color: #ffd65e;
     background-image: linear-gradient(to bottom, #ffd65e, #febf04);
 }

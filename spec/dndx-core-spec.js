@@ -545,6 +545,8 @@ describe("DNDX-CORE", function() {
             dndx().visualcue("Nothing");
             vc = dndx("#draggable0", ".row1").pair.visualcue;
             expect(vcDefault).toBe(vc);
+            dndx().visualcue(null); // A null is accepted and same as calling .visualcues("Nothing")
+            expect(vcDefault).toBe(vc);
         });
 
         it("can override visualcues in a source group level", function() {

@@ -412,6 +412,9 @@ var dndx = null;
                 else if (param instanceof Function) {
                     this.pair.visualcue = param;
                 }
+                else if (param === null) {
+                    this.pair.visualcue = noop; 
+                }
             }
             else if (this.source) {
                 if (typeof param === "string") {
@@ -423,6 +426,9 @@ var dndx = null;
                 else if (param instanceof Function) {
                     this.source[srcClassName].visualcue = param;
                 }
+                else if (param === null) {
+                    this.source[srcClassName].visualcue = noop;
+                }
             }
             else {
                 if (typeof param === "string") {
@@ -430,6 +436,9 @@ var dndx = null;
                 }
                 else if (param instanceof Function) {
                     dataStore.protoPair.visualcue = param;
+                }
+                else if (param === null) {
+                    dataStore.protoPair.visualcue = noop;
                 }
             }
             return this;

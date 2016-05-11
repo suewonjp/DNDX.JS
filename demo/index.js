@@ -54,7 +54,7 @@
         },
     });
 
-    $("#tabs").tabs("option", "active", 0);
+    $("#tabs").tabs("option", "active", 1);
 
 }(jQuery));
 

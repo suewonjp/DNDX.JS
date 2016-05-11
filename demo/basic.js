@@ -136,7 +136,6 @@ function enterBasicDemoScene($) {
     //
     // -- These settings will affect every pair
     dndx()
-        //.visualcue("Overlay")
         .visualcue($("#basic-visualcue-menu")[0].selectedOptions[0].text)
         .oncheckpair(onCheckPair)
         .onconflict(onConflict)
@@ -144,6 +143,7 @@ function enterBasicDemoScene($) {
         //.onout(onOut)
         .ondrop(onDrop);
 
+    // Restore the dialog when we come back to this demo scene
     var dlg = $("#basic-dialog");
     if (dlg.data("needToRestore")) {
         dlg.dialog("open");
@@ -151,6 +151,14 @@ function enterBasicDemoScene($) {
 }
 
 function leaveBasicDemoScene($) {
+    dndx()
+        .visualcue(null)
+        .oncheckpair(null)
+        .onconflict(null)
+        //.onover(null)
+        //.onout(null)
+        .ondrop(null);
+
     var dlg = $("#basic-dialog"), opened = dlg.dialog("isOpen");
     dlg.dialog("close").data("needToRestore", opened);
 }
