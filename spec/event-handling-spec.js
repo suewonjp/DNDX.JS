@@ -50,8 +50,9 @@ describe("EVENT-HANDLING-M0CKING", function() {
                         }
                     });
                 }
-                pair.visualcue(e.type, ui.draggable, $tgtObj, pair.srcSelector, pair.tgtSelector, e);
-                pair.cbActivate(e.type, ui.draggable, $tgtObj, pair.srcSelector, pair.tgtSelector, e);
+                var etc = { srcSelector: pair.srcSelector, tgtSelector:pair.tgtSelector, };
+                pair.visualcue(e.type, ui.draggable, $tgtObj, etc);
+                pair.cbActivate(e.type, ui.draggable, $tgtObj, etc);
             }
         }
         return false;
@@ -69,8 +70,9 @@ describe("EVENT-HANDLING-M0CKING", function() {
                 var $tgtObj = $(pair.tgtSelector).filter(function() {
                     return ! rejectTarget(this, eventContext);
                 });
-                pair.visualcue(e.type, ui.draggable, $tgtObj, pair.srcSelector, pair.tgtSelector);
-                pair.cbDeactivate(e.type, ui.draggable, $tgtObj, pair.srcSelector, pair.tgtSelector);
+                var etc = { srcSelector: pair.srcSelector, tgtSelector:pair.tgtSelector, };
+                pair.visualcue(e.type, ui.draggable, $tgtObj, etc);
+                pair.cbDeactivate(e.type, ui.draggable, $tgtObj, etc);
                 if (eventContext.pairs.length === 0) {
                     eventContext = null;
                 }
@@ -87,7 +89,7 @@ describe("EVENT-HANDLING-M0CKING", function() {
         if (pair) {
             var hitTargets = eventContext.hitTargets || (eventContext.hitTargets = createUniqueSequence()),
                 head = hitTargets.front(), $head = $(head), $tgt = $(e.target),
-                prevPair = eventContext.focusedPair;
+                prevPair = eventContext.focusedPair, etc;
 
             eventContext.$src = ui.draggable;
             eventContext.focusedPair = pair;
@@ -100,12 +102,14 @@ describe("EVENT-HANDLING-M0CKING", function() {
                     eventContext.focusedPair = prevPair;
                     return false;
                 }
-                prevPair.visualcue("dropout", eventContext.$src, $head, prevPair.srcSelector, prevPair.tgtSelector);
-                prevPair.cbOut("dropout", eventContext.$src, $head, prevPair.srcSelector, prevPair.tgtSelector);
+                etc = { srcSelector:prevPair.srcSelector, tgtSelector:prevPair.tgtSelector, };
+                prevPair.visualcue("dropout", eventContext.$src, $head, etc);
+                prevPair.cbOut("dropout", eventContext.$src, $head, etc);
             }
 
-            pair.visualcue(e.type, eventContext.$src, $tgt, pair.srcSelector, pair.tgtSelector, e);
-            pair.cbOver(e.type, eventContext.$src, $tgt, pair.srcSelector, pair.tgtSelector, e);
+            etc = { srcSelector:pair.srcSelector, tgtSelector:pair.tgtSelector, };
+            pair.visualcue(e.type, eventContext.$src, $tgt, etc);
+            pair.cbOver(e.type, eventContext.$src, $tgt, etc);
 
             hitTargets.pushFront(e.target);
         }
@@ -120,12 +124,13 @@ describe("EVENT-HANDLING-M0CKING", function() {
             return false;
         }
         var pair = eventContext.focusedPair, hitTargets = eventContext.hitTargets,
-            head = hitTargets ? hitTargets.front() : null, $head = $(head);
+            head = hitTargets ? hitTargets.front() : null, $head = $(head), etc;
         if (pair) {
             hitTargets.remove(e.target);
             if (head === e.target) {
-                pair.visualcue(e.type, eventContext.$src, $head, pair.srcSelector, pair.tgtSelector);
-                pair.cbOut(e.type, eventContext.$src, $head, pair.srcSelector, pair.tgtSelector);
+                etc = { srcSelector:pair.srcSelector, tgtSelector:pair.tgtSelector, };
+                pair.visualcue(e.type, eventContext.$src, $head, etc);
+                pair.cbOut(e.type, eventContext.$src, $head, etc);
 
                 if (hitTargets.length > 1) {
                     var i, c, selected = $(hitTargets[0]);
@@ -141,8 +146,9 @@ describe("EVENT-HANDLING-M0CKING", function() {
 
                 head = hitTargets.front(), $head = $(head);
                 eventContext.focusedPair = pair = grabPair(eventContext.$src, $head);
-                pair.visualcue("dropover", eventContext.$src, $head, pair.srcSelector, pair.tgtSelector, e);
-                pair.cbOver("dropover", eventContext.$src, $head, pair.srcSelector, pair.tgtSelector, e);
+                etc = { srcSelector:pair.srcSelector, tgtSelector:pair.tgtSelector, };
+                pair.visualcue("dropover", eventContext.$src, $head, etc);
+                pair.cbOver("dropover", eventContext.$src, $head, etc);
             }
         }
         return false;
@@ -159,8 +165,9 @@ describe("EVENT-HANDLING-M0CKING", function() {
         if (pair) {
             var hitTargets = eventContext.hitTargets, head = hitTargets.front(), $head = $(head);
             if (head === e.target) {
-                pair.visualcue(e.type, ui.draggable, $head, pair.srcSelector, pair.tgtSelector, e);
-                pair.cbDrop(e.type, ui.draggable, $head, pair.srcSelector, pair.tgtSelector, e);
+                var etc = { srcSelector:pair.srcSelector, tgtSelector:pair.tgtSelector, };
+                pair.visualcue(e.type, ui.draggable, $head, etc);
+                pair.cbDrop(e.type, ui.draggable, $head, etc);
                 eventContext.focusedPair = eventContext.$src = eventContext.hitTargets = null;
             }
         }
@@ -170,12 +177,12 @@ describe("EVENT-HANDLING-M0CKING", function() {
     beforeEach(function() {
         jasmine.getFixtures().load("basic.html");
 
-        this.visualcue = function(eventType, $srcObj, $tgtObj, srcSelector, tgtSelector, e) {};
-        this.onactivate = function(eventType, $srcObj, $tgtObj, srcSelector, tgtSelector, e) {};
-        this.ondeactivate = function(eventType, $srcObj, $tgtObj, srcSelector, tgtSelector, e) {};
-        this.onover = function(eventType, $srcObj, $tgtObj, srcSelector, tgtSelector, e) {};
-        this.onout = function(eventType, $srcObj, $tgtObj, srcSelector, tgtSelector, e) {};
-        this.ondrop = function(eventType, $srcObj, $tgtObj, srcSelector, tgtSelector, e) {};
+        this.visualcue = function(eventType, $srcObj, $tgtObj) {};
+        this.onactivate = function(eventType, $srcObj, $tgtObj) {};
+        this.ondeactivate = function(eventType, $srcObj, $tgtObj) {};
+        this.onover = function(eventType, $srcObj, $tgtObj) {};
+        this.onout = function(eventType, $srcObj, $tgtObj) {};
+        this.ondrop = function(eventType, $srcObj, $tgtObj) {};
         this.onconflict0 = function($srcObj, $hitObj0, $hitObj1) { 
             expect($hitObj0).toEqual(jasmine.anything());
             expect($hitObj1).toEqual(jasmine.anything());
@@ -615,7 +622,7 @@ describe("EVENT-HANDLING-M0CKING", function() {
                 .targets(".row3").ondeactivate("fallback");
 
             dndx(srcSelector)
-                .ondeactivate(function(eventType, $srcObj, $tgtObj, srcSelector, tgtSelector, e) {
+                .ondeactivate(function(eventType, $srcObj, $tgtObj) {
                     expect($tgtObj.is(".row1")).toBe(false);
                 })
                 .oncheckpair(this.rejectRow1);

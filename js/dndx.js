@@ -283,7 +283,7 @@ var dndx = null;
 
     var builtinVisualcueOwner = {
         visualcueNothing : noop,
-        visualcueOverlay : function(eventType, $srcObj, $tgtObj, srcSelector, tgtSelector, e) {
+        visualcueOverlay : function(eventType, $srcObj, $tgtObj) {
             switch (eventType) {
             case "dropactivate":
                 showOverlay($srcObj[0], $tgtObj);
@@ -302,7 +302,7 @@ var dndx = null;
                 break;
             }
         },
-        visualcueSwing : function(eventType, $srcObj, $tgtObj, srcSelector, tgtSelector, e) {
+        visualcueSwing : function(eventType, $srcObj, $tgtObj) {
             switch (eventType) {
             case "dropactivate":
                 $tgtObj.addClass("dndx-visualcue-swing"); 
@@ -318,7 +318,7 @@ var dndx = null;
                 break;
             }
         },
-        visualcueExterior : function(eventType, $srcObj, $tgtObj, srcSelector, tgtSelector, e) {
+        visualcueExterior : function(eventType, $srcObj, $tgtObj) {
             switch (eventType) {
             case "dropactivate":
                 $tgtObj.addClass("dndx-visualcue-exterior-activate"); 
@@ -601,8 +601,9 @@ var dndx = null;
                             }
                         });
                     }
-                    pair.visualcue(e.type, ui.draggable, $tgtObj, pair.srcSelector, pair.tgtSelector, e);
-                    pair.cbActivate(e.type, ui.draggable, $tgtObj, pair.srcSelector, pair.tgtSelector, e);
+                    var etc = { srcSelector: pair.srcSelector, tgtSelector:pair.tgtSelector, };
+                    pair.visualcue(e.type, ui.draggable, $tgtObj, etc);
+                    pair.cbActivate(e.type, ui.draggable, $tgtObj, etc);
                 }
             }
             return false;
@@ -619,8 +620,9 @@ var dndx = null;
                     var $tgtObj = $(pair.tgtSelector).filter(function() {
                         return ! rejectTarget(this, eventContext);
                     });
-                    pair.visualcue(e.type, ui.draggable, $tgtObj, pair.srcSelector, pair.tgtSelector);
-                    pair.cbDeactivate(e.type, ui.draggable, $tgtObj, pair.srcSelector, pair.tgtSelector);
+                    var etc = { srcSelector: pair.srcSelector, tgtSelector:pair.tgtSelector, };
+                    pair.visualcue(e.type, ui.draggable, $tgtObj, etc);
+                    pair.cbDeactivate(e.type, ui.draggable, $tgtObj, etc);
                     if (eventContext.pairs.length === 0) {
                         eventContext = null;
                     }
@@ -636,7 +638,7 @@ var dndx = null;
             if (pair) {
                 var hitTargets = eventContext.hitTargets || (eventContext.hitTargets = createUniqueSequence()),
                     head = hitTargets.front(), $head = $(head), $tgt = $(e.target),
-                    prevPair = eventContext.focusedPair;
+                    prevPair = eventContext.focusedPair, etc;
 
                 eventContext.$src = ui.draggable;
                 eventContext.focusedPair = pair;
@@ -649,12 +651,14 @@ var dndx = null;
                         eventContext.focusedPair = prevPair;
                         return false;
                     }
-                    prevPair.visualcue("dropout", eventContext.$src, $head, prevPair.srcSelector, prevPair.tgtSelector);
-                    prevPair.cbOut("dropout", eventContext.$src, $head, prevPair.srcSelector, prevPair.tgtSelector);
+                    etc = { srcSelector:prevPair.srcSelector, tgtSelector:prevPair.tgtSelector, };
+                    prevPair.visualcue("dropout", eventContext.$src, $head, etc);
+                    prevPair.cbOut("dropout", eventContext.$src, $head, etc);
                 }
 
-                pair.visualcue(e.type, eventContext.$src, $tgt, pair.srcSelector, pair.tgtSelector, e);
-                pair.cbOver(e.type, eventContext.$src, $tgt, pair.srcSelector, pair.tgtSelector, e);
+                etc = { srcSelector:pair.srcSelector, tgtSelector:pair.tgtSelector, };
+                pair.visualcue(e.type, eventContext.$src, $tgt, etc);
+                pair.cbOver(e.type, eventContext.$src, $tgt, etc);
 
                 hitTargets.pushFront(e.target);
             }
@@ -668,12 +672,13 @@ var dndx = null;
                 return false;
             }
             var pair = eventContext.focusedPair, hitTargets = eventContext.hitTargets,
-                head = hitTargets ? hitTargets.front() : null, $head = $(head);
+                head = hitTargets ? hitTargets.front() : null, $head = $(head), etc;
             if (pair) {
                 hitTargets.remove(e.target);
                 if (head === e.target) {
-                    pair.visualcue(e.type, eventContext.$src, $head, pair.srcSelector, pair.tgtSelector);
-                    pair.cbOut(e.type, eventContext.$src, $head, pair.srcSelector, pair.tgtSelector);
+                    etc = { srcSelector:pair.srcSelector, tgtSelector:pair.tgtSelector, };
+                    pair.visualcue(e.type, eventContext.$src, $head, etc);
+                    pair.cbOut(e.type, eventContext.$src, $head, etc);
 
                     if (hitTargets.length > 1) {
                         var i, c, selected = $(hitTargets[0]);
@@ -689,8 +694,9 @@ var dndx = null;
 
                     head = hitTargets.front(), $head = $(head);
                     eventContext.focusedPair = pair = grabPair(eventContext.$src, $head);
-                    pair.visualcue("dropover", eventContext.$src, $head, pair.srcSelector, pair.tgtSelector, e);
-                    pair.cbOver("dropover", eventContext.$src, $head, pair.srcSelector, pair.tgtSelector, e);
+                    etc = { srcSelector:pair.srcSelector, tgtSelector:pair.tgtSelector, };
+                    pair.visualcue("dropover", eventContext.$src, $head, etc);
+                    pair.cbOver("dropover", eventContext.$src, $head, etc);
                 }
             }
             return false;
@@ -706,8 +712,9 @@ var dndx = null;
             if (pair) {
                 var hitTargets = eventContext.hitTargets, head = hitTargets.front(), $head = $(head);
                 if (head === e.target) {
-                    pair.visualcue(e.type, ui.draggable, $head, pair.srcSelector, pair.tgtSelector, e);
-                    pair.cbDrop(e.type, ui.draggable, $head, pair.srcSelector, pair.tgtSelector, e);
+                    var etc = { srcSelector:pair.srcSelector, tgtSelector:pair.tgtSelector, };
+                    pair.visualcue(e.type, ui.draggable, $head, etc);
+                    pair.cbDrop(e.type, ui.draggable, $head, etc);
                     eventContext.focusedPair = eventContext.$src = eventContext.hitTargets = null;
                 }
             }
