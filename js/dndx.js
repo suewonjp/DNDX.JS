@@ -62,7 +62,6 @@ var dndx = null;
         dataStore = {
             pairs: {},
             protoDraggableOptions: {
-                //cursor: "move",
                 scroll: false,
                 zIndex: defaultZ,
                 containment: "document",
@@ -330,24 +329,6 @@ var dndx = null;
                 break;
             }
         },
-        //visualcueFlash : function(eventType, $srcObj, $tgtObj, srcSelector, tgtSelector, e) {
-            //switch (eventType) {
-            //case "dropactivate":
-                //$tgtObj.addClass("dndx-visualcue-flash"); 
-                //break;
-            //case "dropdeactivate":
-                //$tgtObj.removeClass("dndx-visualcue-flash dndx-visualcue-gradient");
-                //break;
-            //case "dropover": 
-                //$tgtObj.removeClass("dndx-visualcue-flash");
-                //$tgtObj.addClass("dndx-visualcue-gradient");
-                //break;
-            //case "dropout":
-                //$tgtObj.addClass("dndx-visualcue-flash");
-                //$tgtObj.removeClass("dndx-visualcue-gradient");
-                //break;
-            //}
-        //},
     };
 
     function builtinVisualcue(name) {
@@ -550,10 +531,6 @@ var dndx = null;
         };
 
         apiOwner.destroy = cleanup;
-        //apiOwner.destroy = function() {
-            //unbindEventHandlers();
-            //apiOwner = dataStore = null;
-        //};
 
         if ($.data(document.body, "dndx-under-inspection")) {
             // DEBUG/TEST METHODS (NOT FOR PRODUCTION USE!!!)
