@@ -62,7 +62,7 @@ var dndx = null;
         dataStore = {
             pairs: {},
             protoDraggableOptions: {
-                cursor: "move",
+                //cursor: "move",
                 scroll: false,
                 zIndex: defaultZ,
                 containment: "document",
@@ -82,6 +82,8 @@ var dndx = null;
                 cbOver: noop,
                 cbOut: noop,
                 cbDrop: noop,
+                cursorForDrag: "move",
+                cursorForHover: "pointer",
             },
         };
     }
@@ -533,6 +535,15 @@ var dndx = null;
             return _disable.call(this, false);
         };
 
+        apiOwner.cursor = function(dragType, hoverType) {
+            if (this.pair)
+                return this;
+            var owner = (this.source && this.source[srcClassName]) || dataStore.protoPair;
+            owner.cursorForDrag = dragType || "move";
+            owner.cursorForHover = hoverType || "pointer";
+            return this;
+        }
+
         // NON CHAINABLE METHODS
         apiOwner.remove = function(removeUnderlingObjects) {
             removePair(this.srcSelector, this.tgtSelector, removeUnderlingObjects);
@@ -598,8 +609,10 @@ var dndx = null;
             var srcSelector = ui.helper.data(srcDataKey);
             if (srcSelector in dataStore.pairs === false || !ui.helper.is(srcSelector))
                 return false;
-            var etc = { srcSelector:srcSelector, position:ui.position, offset:ui.offset, event:e, };
-            dataStore.pairs[srcSelector][srcClassName].cbStart(e.type, ui.helper, [], etc);
+            var etc = { srcSelector:srcSelector, position:ui.position, offset:ui.offset, event:e, }
+                srcSettings = dataStore.pairs[srcSelector][srcClassName];
+            srcSettings.cbStart(e.type, ui.helper, [], etc);
+            ui.helper.css({ cursor: srcSettings.cursorForDrag, });
         })
         .on("dragstop.dndx", srcClass, function(e, ui) {
             e.stopPropagation();
@@ -608,6 +621,7 @@ var dndx = null;
                 return false;
             var etc = { srcSelector:srcSelector, originalPosition:ui.originalPosition, position:ui.position, offset:ui.offset, event:e, };
             dataStore.pairs[srcSelector][srcClassName].cbStop(e.type, ui.helper, [], etc);
+            ui.helper.css({ cursor: srcSettings.cursorForHover, });
         })
         .on("dropactivate.dndx", tgtClass, function(e, ui) {
             var pair = grabPair(ui.draggable, $(e.target));
