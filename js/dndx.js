@@ -75,6 +75,8 @@ var dndx = null;
             protoPair: {
                 visualcue: noop,
                 cbConflict: noop,
+                cbStart: noop,
+                cbStop: noop,
                 cbActivate: noop,
                 cbDeactivate: noop,
                 cbOver: noop,
@@ -420,6 +422,19 @@ var dndx = null;
             return this;
         };
 
+        apiOwner.onstart = function(cb) {
+            if (this.pair)
+                return this;
+            assignCallback(null, this.source, "cbStart", cb, noop);
+            return this;
+        };
+        apiOwner.onstop = function(cb) {
+            if (this.pair)
+                return this;
+            assignCallback(null, this.source, "cbStop", cb, noop);
+            return this;
+        };
+
         apiOwner.onactivate = function(cb) {
             assignCallback(this.pair, this.source,  "cbActivate", cb, noop);
             return this;
@@ -563,7 +578,7 @@ var dndx = null;
             }
         }
 
-        var className = "." + tgtClassName, eventContext = null;
+        var tgtClass = "." + tgtClassName, srcClass = "." + srcClassName, eventContext = null;
 
         function rejectTarget(tgt, ec) {
             if (!ec)
@@ -577,7 +592,23 @@ var dndx = null;
         }
 
         $("body").off(".dndx")
-        .on("dropactivate.dndx", className, function(e, ui) {
+        .on("dragstart.dndx", srcClass, function(e, ui) {
+            e.stopPropagation();
+            var srcSelector = ui.helper.data(srcDataKey);
+            if (srcSelector in dataStore.pairs === false || !ui.helper.is(srcSelector))
+                return false;
+            var etc = { srcSelector:srcSelector, position:ui.position, offset:ui.offset, event:e, };
+            dataStore.pairs[srcSelector][srcClassName].cbStart(e.type, ui.helper, [], etc);
+        })
+        .on("dragstop.dndx", srcClass, function(e, ui) {
+            e.stopPropagation();
+            var srcSelector = ui.helper.data(srcDataKey);
+            if (srcSelector in dataStore.pairs === false || !ui.helper.is(srcSelector))
+                return false;
+            var etc = { srcSelector:srcSelector, originalPosition:ui.originalPosition, position:ui.position, offset:ui.offset, event:e, };
+            dataStore.pairs[srcSelector][srcClassName].cbStop(e.type, ui.helper, [], etc);
+        })
+        .on("dropactivate.dndx", tgtClass, function(e, ui) {
             var pair = grabPair(ui.draggable, $(e.target));
             if (pair) {
                 eventContext = eventContext || { pairs:[], };
@@ -600,7 +631,7 @@ var dndx = null;
             }
             return false;
         })
-        .on("dropdeactivate.dndx", className, function(e, ui) {
+        .on("dropdeactivate.dndx", tgtClass, function(e, ui) {
             if (!eventContext) {
                 return false;
             }
@@ -622,7 +653,7 @@ var dndx = null;
             }
             return false;
         })
-        .on("dropover.dndx", className, function(e, ui) {
+        .on("dropover.dndx", tgtClass, function(e, ui) {
             if (rejectTarget(e.target, eventContext)) {
                 return false;
             }
@@ -656,7 +687,7 @@ var dndx = null;
             }
             return false;
         })
-        .on("dropout.dndx", className, function(e, ui) {
+        .on("dropout.dndx", tgtClass, function(e, ui) {
             if (rejectTarget(e.target, eventContext)) {
                 return false;
             }
@@ -693,7 +724,7 @@ var dndx = null;
             }
             return false;
         })
-        .on("drop.dndx", className, function(e, ui) {
+        .on("drop.dndx", tgtClass, function(e, ui) {
             if (rejectTarget(e.target, eventContext)) {
                 return false;
             }
