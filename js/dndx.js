@@ -226,22 +226,14 @@ var dndx = null;
     }
 
     function assignCallback(pair, source, slotName, cb, defaultOp) {
+        var owner = pair || (source && source[srcClassName]) || dataStore.protoPair;
         cb = cb || defaultOp;
-        if (pair) {
-            if (cb === "fallback")
-                delete pair[slotName];
-            else 
-                pair[slotName] = cb;
+        if (cb === "fallback") {
+            if (owner !== dataStore.protoPair)
+                delete owner[slotName];
         }
-        else if (source) {
-            if (cb === "fallback")
-                delete source[srcClassName][slotName];
-            else 
-                source[srcClassName][slotName] = cb;
-        }
-        else {
-            if (cb instanceof Function)
-                dataStore.protoPair[slotName] = cb;
+        else if (cb instanceof Function) {
+            owner[slotName] = cb;
         }
     }
 
