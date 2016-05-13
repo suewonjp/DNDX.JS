@@ -458,6 +458,7 @@ var dndx = null;
 
         apiOwner.nullify = function() {
             if (this.pair) {
+                this.pair.nullified = true;
                 this.pair.visualcue = builtinVisualcue("Nothing");
                 this.pair.cbActivate = this.pair.cbDeactivate = this.pair.cbOver = this.pair.cbOut = this.pair.cbDrop = noop;
             }
@@ -625,7 +626,9 @@ var dndx = null;
                         });
                     }
                     var etc = { srcSelector: pair.srcSelector, tgtSelector:pair.tgtSelector, };
-                    pair.visualcue(e.type, ui.draggable, $tgtObj, etc);
+                    if (! pair.nullified) {
+                        pair.visualcue(e.type, ui.draggable, $tgtObj, etc);
+                    }
                     pair.cbActivate(e.type, ui.draggable, $tgtObj, etc);
                 }
             }
