@@ -268,7 +268,6 @@ describe("DNDX-CORE", function() {
                 expect(instance.options).toEqual(jasmine.objectContaining({
                     appendTo:"body",
                     containment:"document",
-                    cursor:"move",
                 }));
             }
 
@@ -284,56 +283,26 @@ describe("DNDX-CORE", function() {
             var instance;
             
             dndx("#draggable0", ".row1");
-            
             instance = $("#draggable0").draggable("instance");
-            expect(instance.options).toEqual(jasmine.objectContaining({
-                appendTo:"body",
-            }));
-
-            dndx().draggableOptions();
-            expect(instance.options).toEqual(jasmine.objectContaining({
-                appendTo:"body",
-            }));
 
             dndx().draggableOptions({ appendTo:"parent", });
-            expect(instance.options).toEqual(jasmine.objectContaining({
-                appendTo:"parent", cursor:"move",
-            }));
+            expect(instance.options).toEqual(jasmine.objectContaining({ appendTo:"parent", }));
 
             dndx("#draggable1", ".row1").draggableOptions({ cursor:"auto", });
-
-            instance = $("#draggable1").draggable("instance");
-            expect(instance.options).toEqual(jasmine.objectContaining({
-                appendTo:"parent", cursor:"auto",
-            }));
+            expect(instance.options).toEqual(jasmine.objectContaining({ appendTo:"parent", cursor:"auto", }));
         });
 
         it("can extend options for droppables", function() {
             var instance;
             
             dndx("#draggable0", ".row1");
-            
             instance = $(".row1").droppable("instance");
-            expect(instance.options).toEqual(jasmine.objectContaining({
-                greedy:false,
-            }));
-
-            dndx().droppableOptions();
-            expect(instance.options).toEqual(jasmine.objectContaining({
-                greedy:false,
-            }));
 
             dndx().droppableOptions({ greedy:true, });
-            expect(instance.options).toEqual(jasmine.objectContaining({
-                greedy:true, scope:"default",
-            }));
+            expect(instance.options).toEqual(jasmine.objectContaining({ greedy:true, }));
 
-            dndx("#draggable1", ".row2").droppableOptions({ scope:"tasks", });
-
-            instance = $(".row2").droppable("instance");
-            expect(instance.options).toEqual(jasmine.objectContaining({
-                greedy:true, scope:"tasks",
-            }));
+            dndx("#draggable1", ".row1").droppableOptions({ scope:"tasks", });
+            expect(instance.options).toEqual(jasmine.objectContaining({ greedy:true, scope:"tasks", }));
         });
 
         it("embeds keys into DOM objects when created", function() {
