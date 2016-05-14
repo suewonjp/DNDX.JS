@@ -100,16 +100,16 @@ body {
     margin: auto;
 }
 
-.prglng-list-container {
+.pl-list-container {
     background-color: aliceblue; 
 }
 
-.prglng-list-container ul {
+.pl-list-container ul {
     list-style: none;
     padding: 10px;
 }
 
-.prglng-list-container ul li {
+.pl-list-container ul li {
     width: 60%;
     margin: 8px auto auto auto;
     padding: 2px;
@@ -118,5 +118,10 @@ body {
     /*box-shadow: #B4B5B5 1px 1px 1px;*/
     background-color: #ffd65e;
     background-image: linear-gradient(to bottom, #ffd65e, #febf04);
+    cursor: pointer;
+}
+
+.dndx-insertbar {
+    background-color: aqua;
 }
 

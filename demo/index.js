@@ -12,45 +12,45 @@
         //},
     //});
 
-    function enterDemoScene(id) {
-        switch (id) {
+    function enterDemoScene($panel) {
+        switch ($panel.attr("id")) {
         case "basic":
-            enterBasicDemoScene($);
+            enterBasicDemoScene($, $panel);
             break;
         case "list":
-            enterListDemoScene($);
+            enterListDemoScene($, $panel);
             break;
         case "pictures":
-            enterPicturesDemoScene($);
+            enterPicturesDemoScene($, $panel);
             break;
         }
     }
 
-    function leaveDemoScene(id) {
-        switch (id) {
+    function leaveDemoScene($panel) {
+        switch ($panel.attr("id")) {
         case "basic":
-            leaveBasicDemoScene($);
+            leaveBasicDemoScene($, $panel);
             break;
         case "list":
-            leaveListDemoScene($);
+            leaveListDemoScene($, $panel);
             break;
         case "pictures":
-            leavePicturesDemoScene($);
+            leavePicturesDemoScene($, $panel);
             break;
         }
     }
 
     $("#tabs").tabs({
         create: function(e, ui) {
-            createBasicDemoScene($);
-            createListDemoScene($);
-            createPicturesDemoScene($);
+            createBasicDemoScene($, ui.panel);
+            createListDemoScene($, ui.panel);
+            createPicturesDemoScene($, ui.panel);
 
-            enterDemoScene(ui.panel.attr("id"));
+            enterDemoScene(ui.panel);
         },
         activate: function(e, ui) {
-            leaveDemoScene(ui.oldPanel.attr("id"));
-            enterDemoScene(ui.newPanel.attr("id"));
+            leaveDemoScene(ui.oldPanel);
+            enterDemoScene(ui.newPanel);
         },
     });
 

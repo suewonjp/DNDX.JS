@@ -1,7 +1,7 @@
 /*eslint no-undef:0*/
 /*eslint no-unused-vars:0*/
 
-function createBasicDemoScene($) {
+function createBasicDemoScene($, $panel) {
     $("#basic-new-src-btn").button().on("click", function() {
         var draggables = $(".draggable"), newId = draggables.length;
         draggables.last().after("<div id='draggable"+newId+"' class='draggable'><span>"+newId+"</span></div>");
@@ -31,9 +31,6 @@ function createBasicDemoScene($) {
                 },
             ],
         })
-        //.on("dialogclose", function(e, ui) {
-            //$(this).data("needToRestore", false);
-        //})
         .find("input").on("click", function(e) {
             if ($(e.target).prop("checked")) {
                 // Fallback to the default (NOT SMART, RANDOM) behavior of conflict resolution
@@ -93,15 +90,15 @@ function createBasicDemoScene($) {
     }
 }
 
-function enterBasicDemoScene($) {
-    //function onOver(eventType, $srcObj, $tgtObj, srcSelector, tgtSelector, e) {}
-    //function onOut(eventType, $srcObj, $tgtObj, srcSelector, tgtSelector, e) {}
+function enterBasicDemoScene($, $panel) {
+    //function onOver(eventType, $srcObj, $tgtObj) {}
+    //function onOut(eventType, $srcObj, $tgtObj) {}
 
     //
     // DROP EVENT HANDLER
     //
     // -- This will be called as soon as a source object is dropped on a target object
-    function onDrop(eventType, $srcObj, $tgtObj, srcSelector, tgtSelector, e) {
+    function onDrop(eventType, $srcObj, $tgtObj) {
         //$tgtObj.animateCss("bounce");
         if ($tgtObj.is(".ui-dialog") === false)
             $tgtObj.effect("bounce", "slow");
@@ -143,14 +140,16 @@ function enterBasicDemoScene($) {
         //.onout(onOut)
         .ondrop(onDrop);
 
-    // Restore the dialog when we come back to this demo scene
     var dlg = $("#basic-dialog");
-    if (dlg.data("needToRestore")) {
+    if ($panel.data("restoreDialog")) {
+        // Restore the dialog when we come back to this demo scene
         dlg.dialog("open");
     }
+
+    dlg.find("input").prop("checked", false);
 }
 
-function leaveBasicDemoScene($) {
+function leaveBasicDemoScene($, $panel) {
     dndx()
         .visualcue(null)
         .oncheckpair(null)
@@ -160,6 +159,7 @@ function leaveBasicDemoScene($) {
         .ondrop(null);
 
     var dlg = $("#basic-dialog"), opened = dlg.dialog("isOpen");
-    dlg.dialog("close").data("needToRestore", opened);
+    dlg.dialog("close");
+    $panel.data("restoreDialog", opened);
 }
 
