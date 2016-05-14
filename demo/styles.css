@@ -24,7 +24,6 @@ body {
     background-color:gold;
     margin: 5px auto auto 5px;
     border-radius: 6px;
-    /*border: 1px solid;*/
     cursor: pointer;
 }
 
@@ -115,7 +114,6 @@ body {
     padding: 2px;
     border:1px solid #ffc826;
     border-radius: 3px;
-    /*box-shadow: #B4B5B5 1px 1px 1px;*/
     background-color: #ffd65e;
     background-image: linear-gradient(to bottom, #ffd65e, #febf04);
     cursor: pointer;
@@ -125,7 +123,6 @@ body {
     position: fixed;
     height: 2px;
     background-color: aqua;
-    /*border-radius: 2px;*/
 }
 
 .dndx-insertbar:before {
