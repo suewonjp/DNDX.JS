@@ -45,7 +45,7 @@ function createListDemoScene($, $panel) {
         getInsertablePositionInfo : function($srcObj, $listContainer) {
             var srcRc = $srcObj[0].getBoundingClientRect(), hh = srcRc.height*0.5, srcY = srcRc.top + hh, 
                 items = $listContainer.children(), h = items.outerHeight(true), result = {};
-            if (items.length) {
+            if (items.length) { // When <ul> has <li> items
                 var itemRc = items[0].getBoundingClientRect(), c = items.length + 1, i,
                     x = itemRc.left, y = itemRc.top + hh;
                 $srcObj.data("dndx-list-insert-idx", c);
@@ -57,7 +57,7 @@ function createListDemoScene($, $panel) {
                 for (i=0; i<c; ++i) {
                     if (srcY < y) {
                         $srcObj.data("dndx-list-insert-idx", i);
-                        result.index = i;
+                        //result.index = i;
                         result.top = y - h*0.5;
                         result.left = x;
                         result.width = itemRc.width;
@@ -66,12 +66,22 @@ function createListDemoScene($, $panel) {
                     y += h;
                 }
             }
-            else {
+            else { // When <ul> has no <li> items
+                $srcObj.data("dndx-list-insert-idx", 0);
+                var containerRc = $listContainer[0].getBoundingClientRect();
+                result.top = containerRc.top + containerRc.height*0.5;
+                result.left = containerRc.left + containerRc.width*0.5 - srcRc.width*0.5;
+                result.width = srcRc.width;
             }
             return result;
         },
         onStart : function (eventType, $srcObj, $tgtObj, etc) {
             $srcObj.data("dndx-list-original-src-rect", $srcObj[0].getBoundingClientRect());
+        },
+        onStop : function (eventType, $srcObj, $tgtObj, etc) {
+            if ($srcObj.data("dndx-list-item-removed")) {
+                $srcObj.remove();
+            }
         },
         onDrop : function (eventType, $srcObj, $tgtObj) {
             var idx = $srcObj.data("dndx-list-insert-idx"), items = $tgtObj.children();
@@ -85,20 +95,34 @@ function createListDemoScene($, $panel) {
         },
         visualcue : function (eventType, $srcObj, $tgtObj) {
             switch (eventType) {
+            case "dropactivate": 
+                if ($tgtObj.is("ul"))
+                    $tgtObj.addClass("dndx-visualcue-exterior-over");
+                break;
+            case "dropdeactivate": 
+                if ($tgtObj.is("ul"))
+                    $tgtObj.removeClass("dndx-visualcue-exterior-over");
+                break;
             case "dropover": 
-                //$tgtObj.addClass("dndx-visualcue-exterior-over");
                 var $listContainer = $tgtObj.is("ul") ? $tgtObj : $tgtObj.parent(),
                     dimensions = listHelper.getInsertablePositionInfo($srcObj, $listContainer);
                 listHelper.showInsertBar(dimensions);
                 break;
             case "dropout":
             case "drop":
-                //$tgtObj.removeClass("dndx-visualcue-exterior-over");
                 listHelper.hideInsertBar();
                 break;
             }
         },
     }; 
+
+    function trashListItem(eventType, $srcObj, $tgtObj) {
+        $srcObj.data("dndx-list-item-removed", true);
+        $srcObj.draggable("option", "revert", false);
+        $srcObj.toggle("fade", "slow", function() {
+            $srcObj.remove();
+        });
+    }
 
     //$(".pl-list-container ul").sortable({ 
         //helper: "clone", 
@@ -109,12 +133,15 @@ function createListDemoScene($, $panel) {
         .draggableOptions({ revert: true, })
         .onconflict(onConflict)
         .onstart(listHelper.onStart)
+        //.onstop(listHelper.onStop)
         .targets(".pl-list-container ul")
             .visualcue(listHelper.visualcue)
             .ondrop(listHelper.onDrop)
         .targets(".pl-list-container li")
             .visualcue(listHelper.visualcue)
         .targets(".trashcan-container .fa")
+            .visualcue("Exterior")
+            .ondrop(trashListItem)
         ;
 }
 
