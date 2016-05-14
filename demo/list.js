@@ -13,31 +13,30 @@ function createListDemoScene($, $panel) {
         return $tgtObj0;
     }
 
-    function showInsertBar(tgtObj) {
-        var rc = tgtObj.getBoundingClientRect(), 
-            top = rc.top + rc.height + 1, left = rc.left - 10, w = rc.width + 20, h = 5,
-            bar = $(".dndx-insertbar");
-        if (! bar.length) {
-            bar = $("<div class='dndx-insertbar ui-front' style='position:fixed;display:inline'>")
-                .appendTo($("body"));
-        }
-        bar.width(w).height(h).offset({ top:top, left:left, }).css("visibility", "visible");
-    }
+    //function showInsertBar(tgtObj) {
+        //var rc = tgtObj.getBoundingClientRect(), 
+            //top = rc.top + rc.height + 1, left = rc.left - 10, w = rc.width + 20, h = 5,
+            //bar = $(".dndx-insertbar");
+        //if (! bar.length) {
+            //bar = $("<div class='dndx-insertbar ui-front' style='position:fixed;display:inline'>")
+                //.appendTo($("body"));
+        //}
+        //bar.width(w).height(h).offset({ top:top, left:left, }).css("visibility", "visible");
+    //}
 
-    function hideInsertBar() {
-        $(".dndx-insertbar").css("visibility", "hidden");
-    }
+    //function hideInsertBar() {
+        //$(".dndx-insertbar").css("visibility", "hidden");
+    //}
 
     var listHelper = {
         showInsertBar : function(dimensions) {
-            var w = dimensions.width + 20, h = 4,
-                left = dimensions.left - 10, top = dimensions.top - 2,
+            var w = dimensions.width + 20, left = dimensions.left - 10, top = dimensions.top - 2,
                 bar = $(".dndx-insertbar");
             if (! bar.length) {
-                bar = $("<div class='dndx-insertbar ui-front' style='position:fixed;display:inline'>")
+                bar = $("<span class='dndx-insertbar ui-front'>")
                     .appendTo($("body"));
             }
-            bar.width(w).height(h).offset({ top:top, left:left, }).css("visibility", "visible");
+            bar.width(w).offset({ top:top, left:left, }).css("visibility", "visible");
         },
         hideInsertBar : function() {
             $(".dndx-insertbar").css("visibility", "hidden");
