@@ -93,9 +93,14 @@ describe("DNDX-CORE", function() {
             expect(countPairs(ds.pairs)).toBe(3);
             expect(ctx.pair.visualcue).toBe(f); // Each pair need to inherit source group properties
 
-            // dndx(srcSelector).target(tgtSelector) and dndx(srcSelector, tgtSelector)
+            // dndx(srcSelector).targets(tgtSelector) and dndx(srcSelector, tgtSelector)
             // should return identical objects
             TEST_UTILS.objectsEqual(ctx, dndx(src[0], tgt[2]));
+
+            var f = function() {
+                dndx().targets(tgt[0]);
+            };
+            expect(f).toThrowError();
         });
 
         it("creates pairs", function() {
@@ -491,9 +496,9 @@ describe("DNDX-CORE", function() {
             expect(dndx(src[0], tgt[1]).pair.cbActivate).toBe(cbGlobal);
         });
 
-        it("can't assign onstart/onstop callbacks from the pair level", function() {
+        it("can't assign .onstart()/.onstop() callbacks from the pair level", function() {
             var src = ["#draggable0", "#draggable1",], tgt = [".row1", ".row2", ".row3",],
-                s, t, pair;
+                s, t, pair, f;
 
             for (s=0; s<src.length; ++s) {
                 dndx(src[s]).onstart(cbSrcGrp);
@@ -508,12 +513,15 @@ describe("DNDX-CORE", function() {
                 }
             }
 
-            // Try to inherit the callbacks from the pair level, but it shouldn't be allowed
-            // onstart/onstop can only be assigned from the global or source level
-            pair = dndx(src[0], tgt[0]).onstart(cbPair).pair;
-            expect(pair.cbStart).toBe(cbSrcGrp);
-            pair = dndx(src[0], tgt[0]).onstop(cbPair).pair;
-            expect(pair.cbStop).toBe(cbSrcGrp);
+            // .onstart()/.onstop() can only be assigned from the global or source group level
+            f = function() {
+                dndx(src[0], tgt[0]).onstart(cbPair);
+            };
+            expect(f).toThrowError();
+            f = function() {
+                dndx(src[0], tgt[0]).onstop(cbPair);
+            };
+            expect(f).toThrowError();
         });
 
         afterEach(function() {

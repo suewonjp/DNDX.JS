@@ -351,9 +351,10 @@ var dndx = null;
         // CHAINABLE METHODS
         apiOwner.targets = function(tgtSelector) {
             validateSelector(tgtSelector);
-            if (this.srcSelector) {
-                setupPair(dataStore.pairs, this.srcSelector, tgtSelector);
+            if (!this.srcSelector) {
+                triggerException("Should not be called from the global level!");
             }
+            setupPair(dataStore.pairs, this.srcSelector, tgtSelector);
             return createChainable(this.srcSelector, tgtSelector);
         };
 
@@ -406,14 +407,16 @@ var dndx = null;
         };
 
         apiOwner.onstart = function(cb) {
-            if (this.pair)
-                return this;
+            if (this.pair) {
+                triggerException("Should not be called from the pair level!");
+            }
             assignCallback(null, this.source, "cbStart", cb, noop);
             return this;
         };
         apiOwner.onstop = function(cb) {
-            if (this.pair)
-                return this;
+            if (this.pair) {
+                triggerException("Should not be called from the pair level!");
+            }
             assignCallback(null, this.source, "cbStop", cb, noop);
             return this;
         };
@@ -438,6 +441,14 @@ var dndx = null;
             assignCallback(this.pair, this.source,  "cbDrop", cb, noop);
             return this;
         };
+
+        //apiOwner.asSortableList = function(tgtSelector, options) {
+            //validateSelector(tgtSelector);
+            //var chainable = this;
+            //if (this.source) {
+            //}
+            //return chainable;
+        //};
 
         apiOwner.nullify = function() {
             if (this.pair) {
