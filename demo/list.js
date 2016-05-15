@@ -60,7 +60,12 @@ function createListDemoScene($, $panel) {
             return result;
         },
         onStart : function (eventType, $srcObj, $tgtObj, etc) {
-            $srcObj.data("dndx-list-original-src-rect", $srcObj[0].getBoundingClientRect());
+            $srcObj
+                .css("opacity", 0.5)
+                .data("dndx-list-original-src-rect", $srcObj[0].getBoundingClientRect());
+        },
+        onStop : function (eventType, $srcObj, $tgtObj, etc) {
+            $srcObj.css("opacity", 1);
         },
         onDrop : function (eventType, $srcObj, $tgtObj) {
             var idx = $srcObj.data("dndx-list-insert-idx"), items = $tgtObj.children();
@@ -107,6 +112,7 @@ function createListDemoScene($, $panel) {
         .draggableOptions({ revert: true, })
         .onconflict(onConflict)
         .onstart(listHelper.onStart)
+        .onstop(listHelper.onStop)
         .targets(".pl-list-container ul, .pl-list-container ol")
             .visualcue(listHelper.visualcue)
             .ondrop(listHelper.onDrop)
