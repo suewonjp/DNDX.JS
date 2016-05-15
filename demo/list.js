@@ -8,8 +8,8 @@ function createListDemoScene($, $panel) {
     function onConflict($srcObj, $tgtObj0, $tgtObj1) {
         if ($tgtObj0.is("li")) return $tgtObj0;
         if ($tgtObj1.is("li")) return $tgtObj1;
-        if ($tgtObj0.is("ul")) return $tgtObj0;
-        if ($tgtObj1.is("ul")) return $tgtObj1;
+        if ($tgtObj0.is("ul, ol")) return $tgtObj0;
+        if ($tgtObj1.is("ul, ol")) return $tgtObj1;
         return $tgtObj0;
     }
 
@@ -29,7 +29,7 @@ function createListDemoScene($, $panel) {
         getInsertablePositionInfo : function($srcObj, $listContainer) {
             var srcRc = $srcObj[0].getBoundingClientRect(), hh = srcRc.height*0.5, srcY = srcRc.top + hh, 
                 items = $listContainer.children(), h = items.outerHeight(true), result = {};
-            if (items.length) { // When <ul> has <li> items
+            if (items.length) { // When <ul> <ol> has <li> items
                 var itemRc = items[0].getBoundingClientRect(), c = items.length + 1, i,
                     x = itemRc.left, y = itemRc.top + hh;
                 $srcObj.data("dndx-list-insert-idx", c);
@@ -50,7 +50,7 @@ function createListDemoScene($, $panel) {
                     y += h;
                 }
             }
-            else { // When <ul> has no <li> items
+            else { // When <ul> or <ol> has no <li> items
                 $srcObj.data("dndx-list-insert-idx", 0);
                 var containerRc = $listContainer[0].getBoundingClientRect();
                 result.top = containerRc.top + containerRc.height*0.5;
@@ -75,15 +75,15 @@ function createListDemoScene($, $panel) {
         visualcue : function (eventType, $srcObj, $tgtObj) {
             switch (eventType) {
             case "dropactivate": 
-                if ($tgtObj.is("ul"))
+                if ($tgtObj.is("ul, ol"))
                     $tgtObj.addClass("dndx-visualcue-exterior-over");
                 break;
             case "dropdeactivate": 
-                if ($tgtObj.is("ul"))
+                if ($tgtObj.is("ul, ol"))
                     $tgtObj.removeClass("dndx-visualcue-exterior-over");
                 break;
             case "dropover": 
-                var $listContainer = $tgtObj.is("ul") ? $tgtObj : $tgtObj.parent(),
+                var $listContainer = $tgtObj.is("ul, ol") ? $tgtObj : $tgtObj.parent(),
                     dimensions = listHelper.getInsertablePositionInfo($srcObj, $listContainer);
                 listHelper.showInsertBar(dimensions);
                 break;
@@ -107,7 +107,7 @@ function createListDemoScene($, $panel) {
         .draggableOptions({ revert: true, })
         .onconflict(onConflict)
         .onstart(listHelper.onStart)
-        .targets(".pl-list-container ul")
+        .targets(".pl-list-container ul, .pl-list-container ol")
             .visualcue(listHelper.visualcue)
             .ondrop(listHelper.onDrop)
         .targets(".pl-list-container li")
