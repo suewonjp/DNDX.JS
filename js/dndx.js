@@ -152,6 +152,24 @@ var dndx = null;
         $obj.data(srcDataKey, srcSelector);
     }
 
+    function embedDraggableHelperCreator(dstOptions, helperOption) {
+        function createCloneHelper() {
+            var $this = $(this), clone = $this.clone().removeAttr("id").data(srcDataKey, $this.data(srcDataKey));
+            return clone;
+        }
+
+        if (helperOption === "clone") {
+            dstOptions.helper = createCloneHelper;
+        }
+        else if (helperOption instanceof Function) {
+            dstOptions.helper = function(e) {
+                var selector = $(this).data(srcDataKey), helper = helperOption.apply(this, e);
+                $(helper).data(srcDataKey, selector);
+                return helper;
+            };
+        }
+    }
+
     function createDraggable(srcSelector) {
         var $obj = $(srcSelector);
         $obj.draggable(dataStore.protoDraggableOptions).addClass(srcClassName);
@@ -164,8 +182,10 @@ var dndx = null;
     }
 
     function refreshDraggable(srcSelector, options) {
-        var $obj = $(srcSelector), instance = $obj.draggable("instance");
-        $obj.draggable($.extend({}, instance ? instance.options : {}, options)).addClass(srcClassName);
+        var $obj = $(srcSelector), instance = $obj.draggable("instance"),
+            finalOptions = $.extend({}, instance ? instance.options : {}, options);
+        embedDraggableHelperCreator(finalOptions, options.helper);
+        $obj.draggable(finalOptions).addClass(srcClassName);
         embedSourceKey($obj, srcSelector);
     }
 
@@ -534,7 +554,7 @@ var dndx = null;
             owner.cursorForDrag = dragType || "move";
             owner.cursorForHover = hoverType || "pointer";
             return this;
-        }
+        };
 
         // NON CHAINABLE METHODS
         apiOwner.remove = function(removeUnderlingObjects) {
@@ -595,9 +615,9 @@ var dndx = null;
         .on("dragstart.dndx", srcClass, function(e, ui) {
             e.stopPropagation();
             var srcSelector = ui.helper.data(srcDataKey);
-            if (srcSelector in dataStore.pairs === false || !ui.helper.is(srcSelector))
+            if (srcSelector in dataStore.pairs === false)
                 return false;
-            var etc = { srcSelector:srcSelector, position:ui.position, offset:ui.offset, event:e, }
+            var etc = { srcSelector:srcSelector, position:ui.position, offset:ui.offset, event:e, },
                 srcSettings = dataStore.pairs[srcSelector][srcClassName];
             srcSettings.cbStart(e.type, ui.helper, [], etc);
             ui.helper.css({ cursor: srcSettings.cursorForDrag, });
@@ -605,10 +625,11 @@ var dndx = null;
         .on("dragstop.dndx", srcClass, function(e, ui) {
             e.stopPropagation();
             var srcSelector = ui.helper.data(srcDataKey);
-            if (srcSelector in dataStore.pairs === false || !ui.helper.is(srcSelector))
+            if (srcSelector in dataStore.pairs === false)
                 return false;
-            var etc = { srcSelector:srcSelector, originalPosition:ui.originalPosition, position:ui.position, offset:ui.offset, event:e, };
-            dataStore.pairs[srcSelector][srcClassName].cbStop(e.type, ui.helper, [], etc);
+            var etc = { srcSelector:srcSelector, originalPosition:ui.originalPosition, position:ui.position, offset:ui.offset, event:e, },
+                srcSettings = dataStore.pairs[srcSelector][srcClassName];
+            srcSettings.cbStop(e.type, ui.helper, [], etc);
             ui.helper.css({ cursor: srcSettings.cursorForHover, });
         })
         .on("dropactivate.dndx", tgtClass, function(e, ui) {

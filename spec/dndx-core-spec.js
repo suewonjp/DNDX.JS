@@ -80,8 +80,8 @@ describe("DNDX-CORE", function() {
         
         it("creates source groups", function() {
             var src = ["#draggable0",], tgt = [".row1", ".row2", ".row3",],
-                ds = dndx().dataStore(), ctx;
-            function f() { console.assert(false); }
+                ds = dndx().dataStore(), ctx,
+                f = function() { console.assert(false); };
 
             ctx = dndx(src[0]).visualcue(f); // Create a source group
             // No pair should be created at this moment
@@ -97,7 +97,7 @@ describe("DNDX-CORE", function() {
             // should return identical objects
             TEST_UTILS.objectsEqual(ctx, dndx(src[0], tgt[2]));
 
-            var f = function() {
+            f = function() {
                 dndx().targets(tgt[0]);
             };
             expect(f).toThrowError();
@@ -282,6 +282,36 @@ describe("DNDX-CORE", function() {
                     greedy:false,
                 }));
             }
+        });
+
+        it("intercepts draggable helper construction", function() {
+            var helper, clone;
+
+            // No helper specified
+            dndx("#draggable0", ".row0");
+            helper = $("#draggable0").draggable("option", "helper");
+            expect(helper).toBe("original");
+
+            // Set the helper as "clone"
+            dndx("#draggable0", ".row0").draggableOptions({ helper: "clone", });
+            helper = $("#draggable0").draggable("option", "helper");
+            expect(helper).toEqual(jasmine.any(Function));
+            clone = helper.apply($("#draggable0")[0]);
+            expect($(clone).data(dndx().sourceDataKeyName())).toBe("#draggable0");
+
+            // Set the helper as callback
+            function cloneIt() {
+                return $(this).clone().removeAttr("id");
+            }
+            dndx("#draggable0", ".row0").draggableOptions({ helper: cloneIt, });
+            helper = $("#draggable0").draggable("option", "helper");
+            expect(helper).toEqual(jasmine.any(Function));
+            clone = helper.apply($("#draggable0")[0]);
+            expect($(clone).data(dndx().sourceDataKeyName())).toBe("#draggable0");
+
+            // The bottom line for this test:
+            // Source selector string should be embedded into the cloned objects
+            // whenever jQueryUI's Draggables create their 'helper' objects
         });
 
         it("can extend options for draggables", function() {
@@ -563,7 +593,7 @@ describe("DNDX-CORE", function() {
 
             vcGlobal = dndx().visualcue("Overlay").dataStore().protoPair.visualcue; // Override in the global level
             expect(vcGlobal instanceof Function).toBe(true);
-            vcSrcGrp = dndx(src[1]).visualcue("Swing").source["dndx-src"].visualcue; // Override in a source group level
+            vcSrcGrp = dndx(src[1]).visualcue("Swing").sourceGroup().visualcue; // Override in a source group level
             expect(vcSrcGrp instanceof Function).toBe(true);
 
             for (t=0; t<tgt.length; ++t) {
