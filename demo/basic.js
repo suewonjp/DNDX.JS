@@ -1,7 +1,7 @@
 /*eslint no-undef:0*/
 /*eslint no-unused-vars:0*/
 
-function createBasicDemoScene($, $panel) {
+function createBasicDemoScene($) {
     $("#basic-new-src-btn").button().on("click", function() {
         var draggables = $(".draggable"), newId = draggables.length;
         draggables.last().after("<div id='draggable"+newId+"' class='draggable'><span>"+newId+"</span></div>");
@@ -133,6 +133,7 @@ function enterBasicDemoScene($, $panel) {
     //
     // -- These settings will affect every pair
     dndx()
+        //.draggableOptions({ helper: "clone", })
         .visualcue($("#basic-visualcue-menu")[0].selectedOptions[0].text)
         .oncheckpair(onCheckPair)
         .onconflict(onConflict)

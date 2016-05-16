@@ -1,7 +1,7 @@
 /*eslint no-undef:0*/
 /*eslint no-unused-vars:0*/
 
-function createListDemoScene($, $panel) {
+function createListDemoScene($) {
     //
     // CONFLICT EVENT HANDLER
     //

@@ -41,10 +41,11 @@
     }
 
     $("#tabs").tabs({
+        active: 1,
         create: function(e, ui) {
-            createBasicDemoScene($, ui.panel);
-            createListDemoScene($, ui.panel);
-            createPicturesDemoScene($, ui.panel);
+            createBasicDemoScene($);
+            createListDemoScene($);
+            createPicturesDemoScene($);
 
             enterDemoScene(ui.panel);
         },
@@ -53,8 +54,6 @@
             enterDemoScene(ui.newPanel);
         },
     });
-
-    $("#tabs").tabs("option", "active", 1);
 
 }(jQuery));
 
