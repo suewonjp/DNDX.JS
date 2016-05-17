@@ -163,8 +163,8 @@ var dndx = null;
         }
         else if (helperOption instanceof Function) {
             dstOptions.helper = function(e) {
-                var selector = $(this).data(srcDataKey), helper = helperOption.apply(this, e);
-                $(helper).data(srcDataKey, selector);
+                var selector = $(this).data(srcDataKey), helper = helperOption.call(this, e);
+                $(helper).data(srcDataKey, selector).removeClass(tgtClassName);
                 return helper;
             };
         }
