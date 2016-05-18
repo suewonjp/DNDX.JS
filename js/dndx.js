@@ -30,7 +30,6 @@ var dndx = null;
         if (iii > -1) {
             this[iii] = this[this.length - 1];
             this.pop();
-            //--this.length;
         }
         else {
             output = null;
@@ -67,10 +66,7 @@ var dndx = null;
                 containment: "document",
                 appendTo: "body",
             },
-            protoDroppableOptions: {
-                //greedy: true,
-                //tolerance: "pointer",
-            },
+            protoDroppableOptions: {},
             protoPair: {
                 visualcue: noop,
                 cbConflict: noop,
@@ -204,8 +200,6 @@ var dndx = null;
     function refreshDraggable(srcSelector, options) {
         var $obj = $(srcSelector), instance = $obj.draggable("instance"),
             finalOptions = extendDraggableOptions(instance ? instance.options : {}, options);
-            //finalOptions = $.extend({}, instance ? instance.options : {}, options);
-        //embedDraggableHelperCreator(finalOptions, options.helper);
         $obj.draggable(finalOptions).addClass(srcClassName);
         embedSourceKey($obj, srcSelector);
     }
@@ -213,7 +207,6 @@ var dndx = null;
     function refreshDroppable(srcSelector, tgtSelector, options) {
         var $obj = $(tgtSelector), instance = $obj.droppable("instance");
         $obj.droppable(extendDroppableOptions(instance ? instance.options : {}, options)).addClass(tgtClassName);
-        //$obj.droppable($.extend({}, instance ? instance.options : {}, options)).addClass(tgtClassName);
     }
 
     function refreshPair(srcSelector, tgtSelector) { 
@@ -406,7 +399,6 @@ var dndx = null;
             }
             else {
                 extendDraggableOptions(dataStore.protoDraggableOptions, options);
-                //$.extend(dataStore.protoDraggableOptions, options);
                 refreshPairs(dataStore.pairs);
             }
             return this;
@@ -417,7 +409,6 @@ var dndx = null;
             }
             else {
                 extendDroppableOptions(dataStore.protoDroppableOptions, options);
-                //$.extend(dataStore.protoDroppableOptions, options);
                 refreshPairs(dataStore.pairs);
             }
             return this;
@@ -485,14 +476,6 @@ var dndx = null;
             assignCallback(this.pair, this.source,  "cbDrop", cb, noop);
             return this;
         };
-
-        //apiOwner.asSortableList = function(tgtSelector, options) {
-            //validateSelector(tgtSelector);
-            //var chainable = this;
-            //if (this.source) {
-            //}
-            //return chainable;
-        //};
 
         apiOwner.nullify = function() {
             if (this.pair) {
