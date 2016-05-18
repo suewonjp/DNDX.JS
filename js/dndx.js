@@ -181,17 +181,39 @@ var dndx = null;
         $obj.droppable(dataStore.protoDroppableOptions).addClass(tgtClassName);
     }
 
+    function extendDraggableOptions(originalOptions, optionsToAdd) {
+        var mergedOptions;
+        optionsToAdd = optionsToAdd || {};
+        if (originalOptions === dataStore.protoDraggableOptions)
+            mergedOptions = $.extend(originalOptions, optionsToAdd);
+        else
+            mergedOptions = $.extend({}, originalOptions, optionsToAdd);
+        embedDraggableHelperCreator(mergedOptions, optionsToAdd.helper);
+        return mergedOptions;
+    }
+
+    function extendDroppableOptions(originalOptions, optionsToAdd) {
+        var mergedOptions;
+        if (originalOptions === dataStore.protoDroppableOptions)
+            mergedOptions = $.extend(originalOptions, optionsToAdd);
+        else
+            mergedOptions = $.extend({}, originalOptions, optionsToAdd);
+        return mergedOptions;
+    }
+
     function refreshDraggable(srcSelector, options) {
         var $obj = $(srcSelector), instance = $obj.draggable("instance"),
-            finalOptions = $.extend({}, instance ? instance.options : {}, options);
-        embedDraggableHelperCreator(finalOptions, options.helper);
+            finalOptions = extendDraggableOptions(instance ? instance.options : {}, options);
+            //finalOptions = $.extend({}, instance ? instance.options : {}, options);
+        //embedDraggableHelperCreator(finalOptions, options.helper);
         $obj.draggable(finalOptions).addClass(srcClassName);
         embedSourceKey($obj, srcSelector);
     }
 
     function refreshDroppable(srcSelector, tgtSelector, options) {
         var $obj = $(tgtSelector), instance = $obj.droppable("instance");
-        $obj.droppable($.extend({}, instance ? instance.options : {}, options)).addClass(tgtClassName);
+        $obj.droppable(extendDroppableOptions(instance ? instance.options : {}, options)).addClass(tgtClassName);
+        //$obj.droppable($.extend({}, instance ? instance.options : {}, options)).addClass(tgtClassName);
     }
 
     function refreshPair(srcSelector, tgtSelector) { 
@@ -383,7 +405,8 @@ var dndx = null;
                 refreshDraggable(this.srcSelector, options);
             }
             else {
-                $.extend(dataStore.protoDraggableOptions, options);
+                extendDraggableOptions(dataStore.protoDraggableOptions, options);
+                //$.extend(dataStore.protoDraggableOptions, options);
                 refreshPairs(dataStore.pairs);
             }
             return this;
@@ -393,7 +416,8 @@ var dndx = null;
                 refreshDroppable(this.srcSelector, this.tgtSelector, options);
             }
             else {
-                $.extend(dataStore.protoDroppableOptions, options);
+                extendDroppableOptions(dataStore.protoDroppableOptions, options);
+                //$.extend(dataStore.protoDroppableOptions, options);
                 refreshPairs(dataStore.pairs);
             }
             return this;

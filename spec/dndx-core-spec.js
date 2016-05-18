@@ -285,15 +285,15 @@ describe("DNDX-CORE", function() {
         });
 
         it("intercepts draggable helper construction", function() {
-            var helper, clone;
+            var chainable, helper, clone;
 
             // No helper specified
-            dndx("#draggable0", ".row0");
+            chainable = TEST_UTILS.getRandomBool() ? dndx("#draggable0", ".row0") : dndx("#draggable0");
             helper = $("#draggable0").draggable("option", "helper");
             expect(helper).toBe("original");
 
             // Set the helper as "clone"
-            dndx("#draggable0", ".row0").draggableOptions({ helper: "clone", });
+            chainable.draggableOptions({ helper: "clone", });
             helper = $("#draggable0").draggable("option", "helper");
             expect(helper).toEqual(jasmine.any(Function));
             clone = helper.apply($("#draggable0")[0]);
@@ -303,7 +303,7 @@ describe("DNDX-CORE", function() {
             function cloneIt() {
                 return $(this).clone().removeAttr("id");
             }
-            dndx("#draggable0", ".row0").draggableOptions({ helper: cloneIt, });
+            chainable.draggableOptions({ helper: cloneIt, });
             helper = $("#draggable0").draggable("option", "helper");
             expect(helper).toEqual(jasmine.any(Function));
             clone = helper.apply($("#draggable0")[0]);
@@ -312,6 +312,32 @@ describe("DNDX-CORE", function() {
             // The bottom line for this test:
             // Source selector string should be embedded into the cloned objects
             // whenever jQueryUI's Draggables create their 'helper' objects
+        });
+
+        it("intercepts draggable helper construction in the global level", function() {
+            var ds, helper, clone;
+
+            // No helper specified
+            ds = dndx().dataStore();
+            expect(ds.protoDraggableOptions.helper).not.toEqual(jasmine.anything());
+
+            // Set the helper as "clone"
+            ds = dndx().draggableOptions({ helper: "clone", }).dataStore();
+            helper = ds.protoDraggableOptions.helper;
+            expect(helper).toEqual(jasmine.any(Function));
+            dndx("#draggable0");
+            clone = helper.apply($("#draggable0")[0]);
+            expect($(clone).data(dndx().sourceDataKeyName())).toBe("#draggable0");
+
+            // Set the helper as callback
+            function cloneIt() {
+                return $(this).clone().removeAttr("id");
+            }
+            ds = dndx().draggableOptions({ helper: cloneIt, }).dataStore();
+            helper = ds.protoDraggableOptions.helper;
+            expect(helper).toEqual(jasmine.any(Function));
+            clone = helper.apply($("#draggable0")[0]);
+            expect($(clone).data(dndx().sourceDataKeyName())).toBe("#draggable0");
         });
 
         it("can extend options for draggables", function() {
