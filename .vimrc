@@ -1,4 +1,4 @@
-set wildignore+=tags,etc/**,external/**,images/**
+set wildignore+=tags,etc/**,external/**,images/**,trashcan/**
 
 "hi uppercaseKeywords ctermfg=Brown guifg=Brown
 "autocmd Syntax javascript,java syntax match uppercaseKeywords /\<[A-Z_]\+\>/
