@@ -311,6 +311,24 @@ var dndx = null;
         }, 300);
     }
 
+    function showUnderline($tgtObj) {
+        if (! $tgtObj || ! $tgtObj.length)
+            return;
+        var i, c = $tgtObj.length, rc, w, left, top, container = $("#dndx-visualcue-underline"), bar;
+        if (! container.length) 
+            container = $("<div id='dndx-visualcue-underline'>").appendTo($("body"));
+        for (i=0; i<c; ++i) {
+            rc = $tgtObj[i].getBoundingClientRect(), w = rc.width + 20, left = rc.left - 10, top = rc.bottom + 2;
+            console.log(rc);
+            bar = $("<span class='dndx-visualcue-underline-aqua ui-front'>").appendTo(container);
+            bar.width(w).offset({ top:top, left:left, });
+        }
+    }
+
+    function hideUnderline() {
+        $("#dndx-visualcue-underline").remove();
+    }
+
     var builtinVisualcueOwner = {
         visualcueNothing : noop,
         visualcueOverlay : function(eventType, $srcObj, $tgtObj) {
@@ -355,6 +373,22 @@ var dndx = null;
                 break;
             case "dropdeactivate":
                 $tgtObj.removeClass("dndx-visualcue-exterior-aqua");
+                break;
+            case "dropover": 
+                $tgtObj.addClass("dndx-visualcue-interior-red");
+                break;
+            case "dropout":
+                $tgtObj.removeClass("dndx-visualcue-interior-red");
+                break;
+            }
+        },
+        visualcueUnderline : function(eventType, $srcObj, $tgtObj) {
+            switch (eventType) {
+            case "dropactivate":
+                showUnderline($tgtObj);
+                break;
+            case "dropdeactivate":
+                hideUnderline();
                 break;
             case "dropover": 
                 $tgtObj.addClass("dndx-visualcue-interior-red");

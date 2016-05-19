@@ -41,7 +41,7 @@
     }
 
     $("#tabs").tabs({
-        active: 1,
+        active: 0,
         create: function(e, ui) {
             createBasicDemoScene($);
             createListDemoScene($);
