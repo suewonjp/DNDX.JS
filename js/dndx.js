@@ -351,16 +351,16 @@ var dndx = null;
         visualcueExterior : function(eventType, $srcObj, $tgtObj) {
             switch (eventType) {
             case "dropactivate":
-                $tgtObj.addClass("dndx-visualcue-exterior-activate"); 
+                $tgtObj.addClass("dndx-visualcue-exterior-aqua"); 
                 break;
             case "dropdeactivate":
-                $tgtObj.removeClass("dndx-visualcue-exterior-activate dndx-visualcue-exterior-over");
+                $tgtObj.removeClass("dndx-visualcue-exterior-aqua");
                 break;
             case "dropover": 
-                $tgtObj.addClass("dndx-visualcue-exterior-over");
+                $tgtObj.addClass("dndx-visualcue-interior-red");
                 break;
             case "dropout":
-                $tgtObj.removeClass("dndx-visualcue-exterior-over");
+                $tgtObj.removeClass("dndx-visualcue-interior-red");
                 break;
             }
         },

@@ -81,11 +81,11 @@ function createListDemoScene($) {
             switch (eventType) {
             case "dropactivate": 
                 if ($tgtObj.is("ul, ol"))
-                    $tgtObj.addClass("dndx-visualcue-exterior-over");
+                    $tgtObj.addClass("dndx-visualcue-interior-red");
                 break;
             case "dropdeactivate": 
                 if ($tgtObj.is("ul, ol"))
-                    $tgtObj.removeClass("dndx-visualcue-exterior-over");
+                    $tgtObj.removeClass("dndx-visualcue-interior-red");
                 break;
             case "dropover": 
                 var $listContainer = $tgtObj.is("ul, ol") ? $tgtObj : $tgtObj.parent(),
