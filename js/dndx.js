@@ -319,14 +319,30 @@ var dndx = null;
             container = $("<div id='dndx-visualcue-underline'>").appendTo($("body"));
         for (i=0; i<c; ++i) {
             rc = $tgtObj[i].getBoundingClientRect(), w = rc.width + 20, left = rc.left - 10, top = rc.bottom + 2;
-            console.log(rc);
-            bar = $("<span class='dndx-visualcue-underline-aqua ui-front'>").appendTo(container);
+            bar = $("<span class='dndx-visualcue-underline dndx-bgclr-aqua ui-front'>").appendTo(container);
             bar.width(w).offset({ top:top, left:left, });
         }
     }
 
     function hideUnderline() {
         $("#dndx-visualcue-underline").remove();
+    }
+
+    function showCurvedArrow($tgtObj) {
+        if (! $tgtObj || ! $tgtObj.length)
+            return;
+        var i, c = $tgtObj.length, rc, left, top, container = $("#dndx-visualcue-arrow"), arrow;
+        if (! container.length) 
+            container = $("<div id='dndx-visualcue-arrow'>").appendTo($("body"));
+        for (i=0; i<c; ++i) {
+            rc = $tgtObj[i].getBoundingClientRect(), left = rc.left + rc.width*0.5, top = rc.top + rc.height*0.5;
+            arrow = $("<div class='dndx-visualcue-arrow ui-front'>").appendTo(container);
+            arrow.offset({ top:top, left:left, });
+        }
+    }
+
+    function hideCurvedArrow() {
+        $("#dndx-visualcue-arrow").remove();
     }
 
     var builtinVisualcueOwner = {
@@ -339,13 +355,11 @@ var dndx = null;
             case "dropdeactivate":
                 hideOverlay();
                 break;
-            case "drop":
-                $tgtObj.removeClass("dndx-visualcue-gradient");
-                break;
             case "dropover": 
                 $tgtObj.addClass("dndx-visualcue-gradient");
                 break;
             case "dropout":
+            case "drop":
                 $tgtObj.removeClass("dndx-visualcue-gradient");
                 break;
             }
@@ -362,6 +376,7 @@ var dndx = null;
                 $tgtObj.addClass("dndx-visualcue-gradient");
                 break;
             case "dropout":
+            case "drop":
                 $tgtObj.removeClass("dndx-visualcue-gradient");
                 break;
             }
@@ -378,6 +393,7 @@ var dndx = null;
                 $tgtObj.addClass("dndx-visualcue-interior-red");
                 break;
             case "dropout":
+            case "drop":
                 $tgtObj.removeClass("dndx-visualcue-interior-red");
                 break;
             }
@@ -394,6 +410,24 @@ var dndx = null;
                 $tgtObj.addClass("dndx-visualcue-interior-red");
                 break;
             case "dropout":
+            case "drop":
+                $tgtObj.removeClass("dndx-visualcue-interior-red");
+                break;
+            }
+        },
+        visualcueArrow : function(eventType, $srcObj, $tgtObj) {
+            switch (eventType) {
+            case "dropactivate":
+                showCurvedArrow($tgtObj);
+                break;
+            case "dropdeactivate":
+                hideCurvedArrow();
+                break;
+            case "dropover": 
+                $tgtObj.addClass("dndx-visualcue-interior-red");
+                break;
+            case "dropout":
+            case "drop":
                 $tgtObj.removeClass("dndx-visualcue-interior-red");
                 break;
             }

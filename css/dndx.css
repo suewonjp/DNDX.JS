@@ -41,10 +41,38 @@
     box-shadow: 0px 0px 10px 5px orangered inset;
 }
 
-.dndx-visualcue-underline-aqua {
+.dndx-visualcue-underline {
     position: fixed;
     height: 6px;
     border-radius: 3px;
+}
+
+/* 
+ * Original code can be found at:
+ * https://css-tricks.com/examples/ShapesOfCSS/ 
+ * */
+.dndx-visualcue-arrow {
+    position: relative;
+    width: 0;
+    height: 0;
+    border-top: 12px solid transparent;
+    border-right: 12px solid red;
+    transform: rotate(10deg);
+}
+.dndx-visualcue-arrow:after {
+    content: "";
+    position: absolute;
+    border: 0 solid transparent;
+    border-top: 4px solid red;
+    border-radius: 20px 0 0 0;
+    top: -14px;
+    left: -10px;
+    width: 16px;
+    height: 12px;
+    transform: rotate(45deg);
+}
+
+.dndx-bgclr-aqua {
     background-color: aqua;
 }
 
