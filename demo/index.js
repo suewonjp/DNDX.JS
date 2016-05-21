@@ -20,9 +20,6 @@
         case "list":
             enterListDemoScene($, $panel);
             break;
-        case "pictures":
-            enterPicturesDemoScene($, $panel);
-            break;
         }
     }
 
@@ -34,9 +31,6 @@
         case "list":
             leaveListDemoScene($, $panel);
             break;
-        case "pictures":
-            leavePicturesDemoScene($, $panel);
-            break;
         }
     }
 
@@ -45,7 +39,6 @@
         create: function(e, ui) {
             createBasicDemoScene($);
             createListDemoScene($);
-            createPicturesDemoScene($);
 
             enterDemoScene(ui.panel);
         },
