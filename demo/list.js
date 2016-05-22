@@ -58,8 +58,10 @@ function createListDemoScene($) {
         visualcue : function (eventType, $srcObj, $tgtObj) {
             switch (eventType) {
             case "dropactivate": 
+                $tgtObj.addClass("dndx-visualcue-exterior-aqua");
                 break;
             case "dropdeactivate": 
+                $tgtObj.removeClass("dndx-visualcue-exterior-aqua");
                 break;
             case "dropover": 
                 $tgtObj.addClass("dndx-visualcue-interior-red");

@@ -87,6 +87,10 @@ body {
     justify-content: space-around;
 }
 
+.flex-container > h3 {
+    color: gray;
+}
+
 .flex-container > div {
     width: 25%;
 }
@@ -106,6 +110,7 @@ body {
 .pl-list-container ul {
     list-style: none;
     padding: 10px;
+    min-height: 260px;
 }
 
 .pl-list-container ol {
