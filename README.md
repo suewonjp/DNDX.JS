@@ -44,7 +44,7 @@ Import _css/dndx.css_ and _js/dndx.js_ file into your HTML file like so:
     limitations under the License.
 
 * * *
-Written by Suewon Bahng   ( Last Updated 03 May, 2016 )
+Written by Suewon Bahng   ( Last Updated 25 May, 2016 )
 
 ### CONTRIBUTORS
 Suewon Bahng  
