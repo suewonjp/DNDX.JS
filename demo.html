@@ -16,9 +16,35 @@
 <body>
     <div id="tabs">
         <ul>
-            <li><a href="#basic">Basic</a></li>
-            <li><a href="#list">List</a></li>
+            <li><a href="#intro">Intro</a></li>
+            <li><a href="#basic">Demo - Basic</a></li>
+            <li><a href="#list">Demo - List</a></li>
         </ul>
+
+        <div id="intro">
+            <div class="links">
+                <a href="#"><span class="fa fa-github fa-lg link">&nbsp;Github Page</span></a>
+                <a href="#"><span class="fa fa-book fa-lg link">&nbsp;API Docs</span></a>
+            </div>
+            <div class="flex-container">
+                <div class="summary">
+                    <p><a href="#">DNDX.JS</a> is a Javascript library enhancing Drag &amp; Drop User Inferface interactions for your web page.</p>
+                    <p>Main concern of <a href="#">DNDX.JS</a> is providing you <em><strong>HIGHER LEVEL</strong></em> Drag &amp; Drop features while delegating most of its lower level Drag &amp; Drop functions to jQuery UI's <a href="http://api.jqueryui.com/draggable/">Draggable</a> and <a href="http://api.jqueryui.com/droppable/">Droppable</a> Widgets.</p>
+                    <pre><code>dndx(".draggable", ".droppable")
+    .visualcue("Exterior")
+    .onstart(onStartCallback)
+    .onconflict(onConflictCallback)
+    .onover(onOverCallback)
+    .ondrop(onDropCallback);
+                    </code></pre>
+                    <p>Please, click the demo pages above to see what <a href="#">DNDX.JS</a> can do.</p>
+                    <p>Also, check out the API documentation. It has more detailed discussion about what the library looks like.</p>
+                </div>
+                <div class="animation">
+                    <p> Hello </p>
+                </div>
+            </div>
+        </div> <!--"intro"-->
 
         <div id="basic">
             <div class="header">

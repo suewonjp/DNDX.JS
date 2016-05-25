@@ -34,9 +34,14 @@
         }
     }
 
+    function createIntroScene($) {}
+    function enterIntroScene($, $panel) {}
+    function leaveIntroScene($, $panel) {}
+
     $("#tabs").tabs({
-        active: 1,
+        active: 0,
         create: function(e, ui) {
+            createIntroScene($);
             createBasicDemoScene($);
             createListDemoScene($);
 

@@ -84,6 +84,13 @@ function createListDemoScene($) {
         });
     }
 
+    dndx(".draggable", ".droppable")
+        .visualcue("Exterior")
+        .onstart(onStartCallback)
+        .onconflict(onConflictCallback)
+        .onover(onOverCallback)
+        .ondrop(onDropCallback);
+
     dndx(".pl-list-container li")
         .draggableOptions({ revert: true, })
         .onstart(listHelper.onStart)
