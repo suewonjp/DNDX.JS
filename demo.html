@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>DNDX.JS DEMO</title>
+    <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.11.4/themes/south-street/jquery-ui.css">
+    <link rel="stylesheet" href="css/dndx.css">
+    <link rel="stylesheet" href="demo/styles.css">
+
+    <script src="https://code.jquery.com/jquery-1.12.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+    <script src="js/dndx.js"></script>
+</head>
+
+<body>
+    <div id="tabs">
+        <ul>
+            <li><a href="#intro">Intro</a></li>
+            <li><a href="#basic">Demo - Basic</a></li>
+            <li><a href="#list">Demo - List</a></li>
+        </ul>
+
+        <div id="intro">
+            <div class="links">
+                <a href="#"><span class="fa fa-github fa-lg link">&nbsp;Github Page</span></a>
+                <a href="#"><span class="fa fa-book fa-lg link">&nbsp;API Docs</span></a>
+            </div>
+            <div class="flex-container">
+                <div class="summary">
+                    <p><a href="#">DNDX.JS</a> is a Javascript library enhancing Drag &amp; Drop User Inferface interactions for your web page.</p>
+                    <p>Main concern of <a href="#">DNDX.JS</a> is providing you <em><strong>HIGHER LEVEL</strong></em> Drag &amp; Drop features while delegating most of its lower level Drag &amp; Drop functions to jQuery UI's <a href="http://api.jqueryui.com/draggable/">Draggable</a> and <a href="http://api.jqueryui.com/droppable/">Droppable</a> Widgets.</p>
+                    <pre><code>dndx(".draggable", ".droppable")
+    .visualcue("Exterior")
+    .onstart(onStartCallback)
+    .onconflict(onConflictCallback)
+    .onover(onOverCallback)
+    .ondrop(onDropCallback);
+                    </code></pre>
+                    <p>Please, click the demo pages above to see what <a href="#">DNDX.JS</a> can do.</p>
+                    <p>Also, check out the API documentation. It has more detailed discussion about what the library looks like.</p>
+                </div>
+                <div class="animation">
+                    <p> Hello </p>
+                </div>
+            </div>
+        </div> <!--"intro"-->
+
+        <div id="basic">
+            <div class="header">
+                <div class="menu-container">
+                    <h2>Select Visualcue</h2>
+                    <select id="basic-visualcue-menu">
+                        <option>Overlay</option>
+                        <option>Swing</option>
+                        <option>Exterior</option>
+                        <option>Underline</option>
+                        <option>Arrow</option>
+                        <option>Nothing</option>
+                    </select>
+                </div>
+            </div>
+
+            <table>
+                <tr>
+                    <td><div class="droppable row1 col1">Row 1, Col 1<br>(Drop Here)</div></td>
+                    <td><div class="droppable row1 col2">Row 1, Col 2<br>(Drop Here)</div></td>
+                    <td><div class="droppable row1 col3">Row 1, Col 3<br>(Drop Here)</div></td>
+                    <td><input type="checkbox" class="check-to-reject-row">Can't Drop This Row</input></td>
+                </tr>
+                <tr>
+                    <td><div class="droppable row2 col1">Row 2, Col 1<br>(Drop Here)</div></td>
+                    <td><div class="droppable row2 col2">Row 2, Col 2<br>(Drop Here)</div></td>
+                    <td><div class="droppable row2 col3">Row 2, Col 3<br>(Drop Here)</div></td>
+                    <td><input type="checkbox" class="check-to-reject-row">Can't Drop This Row</input></td>
+                </tr>
+                <tr>
+                    <td><div class="droppable row3 col1">Row 3, Col 1<br>(Drop Here)</div></td>
+                    <td><div class="droppable row3 col2">Row 3, Col 2<br>(Drop Here)</div></td>
+                    <td><div class="droppable row3 col3">Row 3, Col 3<br>(Drop Here)</div></td>
+                    <td><input type="checkbox" class="check-to-reject-row">Can't Drop This Row</input></td>
+                </tr>
+            </table>
+
+            <br/><hr/>
+
+            <div>
+                <button id="basic-new-src-btn"><span class="ui-icon ui-icon-plus"></span></button>
+                <a href="#" id="basic-dialog-link" class="ui-state-default ui-corner-all"><span class="ui-icon ui-icon-newwin"></span>Open Dialog</a>
+                <br/><br/>
+                <div id="draggable0" class="draggable"><span>0 (Drag Me)</span></div>
+                <div id="draggable1" class="draggable"><span>1 (Drag Me)</span></div>
+            </div>
+
+            <div id="basic-dialog" title="Dialog">
+                <p>Drop Here!<br>Drop Here!<br>Drop Here!</p>
+                <br/>
+                <input type="checkbox">Do Not Resolve Conflict</input>
+            </div>
+        </div> <!--"basic"-->
+
+        <div id="list">
+            <div class="flex-container">
+                <h3>The Programming Languages I Like</h3>
+                <h3>The Programming Languages I Don't Like</h3>
+                <h3>Throw Away Languages You Really Hate</h3>
+            </div>
+            <div class="flex-container">
+                <div class="pl-list-container ui-corner-all">
+                    <ol>
+                        <li>JavaScript</li>
+                        <li>Java</li>
+                        <li>C++</li>
+                        <li>Objective C</li>
+                        <li>C</li>
+                        <li>Ruby</li>
+                        <li>Python</li>
+                        <li>PHP</li>
+                        <li>Groovy</li>
+                        <li>Scala</li>
+                    </ol>
+                </div>
+                <div class="pl-list-container ui-corner-all">
+                    <ul>
+                    </ul>
+                </div>
+                <div class="trashcan-container">
+                    <div class="fa fa-trash fa-3x"></div>
+                </div>
+            </div>
+        </div> <!--"list"-->
+    </div> <!--<div id="tabs">-->
+
+    <script src="demo/basic.js"></script>
+    <script src="demo/list.js"></script>
+    <script src="demo/index.js"></script>
+</body>
+</html>

@@ -1,0 +1,170 @@
+body {
+    font: 62.5% "Trebuchet MS", sans-serif;
+    margin: 5px, 50px, auto, 50px;
+}
+
+.header {
+    width: 100%;
+    height: 80px;
+    background-color: aliceblue;
+    display: flex;
+}
+
+.links {
+    width: 100%;
+    background-color: aliceblue;
+    display: flex;
+    margin-bottom: 10px;
+}
+
+.link {
+    margin: 10px;
+    padding: 0 10px 6px 0;
+    color: gray;
+    border-right: 1px solid lightgray;
+    border-bottom: 1px solid lightgray;
+    border-radius: 3px;
+}
+
+#intro .summary {
+    width: 40%;
+    background-color: ghostwhite;
+    line-height: 1.5em;
+    font-size: 16px;
+    font-family: Georgia, Palatino, 'Palatino Linotype', Times, 'Times New Roman', serif;
+}
+
+pre {
+    border: 3px solid gray;
+    margin: 2.0em;
+    padding: 1.0em;
+    background-color: white;
+}
+
+#intro .animation {
+    /*background-color: moccasin;*/
+}
+
+#intro p {
+    margin-left: 1.0em;
+}
+
+.menu-container {
+    margin-left: auto;
+}
+
+#basic-visualcue-menu {
+    width: 150px;
+}
+
+.draggable {
+    width: 65px;
+    height: 25px;
+    background-color:gold;
+    margin: 5px auto auto 5px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.draggable:hover {
+    box-shadow: 0px 0px 2px 2px orangered;
+}
+
+.draggable > span {
+    display: inline-block;
+    margin: 5px auto auto 5px;
+}
+
+.droppable {
+    width: 90px;
+    height: 75px;
+    color: #fff;
+    padding: 10px;
+    margin: 15px;
+}
+
+.row1 {
+    background-color: #aaa;
+}
+.row2 {
+    background-color: #777;
+}
+.row3 {
+    background-color: #333;
+}
+
+#draggable0 {
+    background-color: moccasin;
+    z-index: 10000;
+}
+
+#draggable1 {
+    background-color: aquamarine;
+    z-index: 10000;
+}
+
+#basic-dialog-link {
+    padding: .4em 1em .4em 20px;
+    text-decoration: none;
+    position: relative;
+}
+
+#basic-dialog-link span.ui-icon {
+    margin: 0 5px 0 0;
+    position: absolute;
+    left: .2em;
+    top: 50%;
+    margin-top: -8px;
+}
+
+#basic-dialog > p {
+    background-color: lightgray;
+}
+
+.flex-container {
+    display: flex;
+    justify-content: space-around;
+}
+
+.flex-container > h3 {
+    color: gray;
+}
+
+.flex-container > div {
+    width: 25%;
+}
+
+.trashcan-container {
+    display: flex;
+}
+
+.trashcan-container .fa {
+    margin: auto;
+}
+
+.pl-list-container {
+    background-color: aliceblue; 
+}
+
+.pl-list-container ul {
+    list-style: none;
+    padding: 10px;
+    min-height: 260px;
+}
+
+.pl-list-container ol {
+    padding: 10px;
+}
+
+.pl-list-container li {
+    width: 30%;
+    margin: 8px auto auto auto;
+    padding: 2px;
+    border:1px solid #ffc826;
+    border-radius: 3px;
+    background-color: #ffd65e;
+    background-image: linear-gradient(to bottom, #ffd65e, #febf04);
+    cursor: pointer;
+    overflow: hidden;
+}
+
