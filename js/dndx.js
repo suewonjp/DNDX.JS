@@ -166,15 +166,23 @@ var dndx = null;
         }
     }
 
+    function constructDraggable($obj, options, srcSelector) {
+        $obj.draggable(options).addClass(srcClassName);
+        embedSourceKey($obj, srcSelector);
+    }
+
+    function constructDroppable($obj, options) {
+        $obj.droppable(options).addClass(tgtClassName);
+    }
+
     function createDraggable(srcSelector) {
         var $obj = $(srcSelector);
-        $obj.draggable(dataStore.protoDraggableOptions).addClass(srcClassName);
-        embedSourceKey($obj, srcSelector);
+        constructDraggable($obj, dataStore.protoDraggableOptions, srcSelector);
     }
 
     function createDroppable(srcSelector, tgtSelector) {
         var $obj = $(tgtSelector);
-        $obj.droppable(dataStore.protoDroppableOptions).addClass(tgtClassName);
+        constructDroppable($obj, dataStore.protoDroppableOptions);
     }
 
     function extendDraggableOptions(originalOptions, optionsToAdd) {
@@ -200,13 +208,13 @@ var dndx = null;
     function refreshDraggable(srcSelector, options) {
         var $obj = $(srcSelector), instance = $obj.draggable("instance"),
             finalOptions = extendDraggableOptions(instance ? instance.options : {}, options);
-        $obj.draggable(finalOptions).addClass(srcClassName);
-        embedSourceKey($obj, srcSelector);
+        constructDraggable($obj, finalOptions, srcSelector);
     }
 
     function refreshDroppable(srcSelector, tgtSelector, options) {
-        var $obj = $(tgtSelector), instance = $obj.droppable("instance");
-        $obj.droppable(extendDroppableOptions(instance ? instance.options : {}, options)).addClass(tgtClassName);
+        var $obj = $(tgtSelector), instance = $obj.droppable("instance"),
+            finalOptions = extendDroppableOptions(instance ? instance.options : {}, options);
+        constructDroppable($obj, finalOptions);
     }
 
     function refreshPair(srcSelector, tgtSelector) { 
