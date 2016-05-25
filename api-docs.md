@@ -285,12 +285,12 @@ Disables pairs.
 Enables pairs.
 
 ###### .cursor(dragType, hoverType)
-Controls cursor types for the source objects.
+Sets cursor types for the source objects.
 
 - dragType 
  - A cursor type for dragging. The default is "move"
-- hoverType 
- - A cursor type for hovering on the source object before dragging. The default is "pointer"
+- hoverType [optional]  
+ - A cursor type for hovering on the source object before dragging. The default is "auto"
 
 ###### .remove()
 Removes pairs.

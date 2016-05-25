@@ -77,144 +77,182 @@ describe("DNDX-CORE", function() {
             }
             return count;
         }
-        
-        it("creates source groups", function() {
-            var src = ["#draggable0",], tgt = [".row1", ".row2", ".row3",],
-                ds = dndx().dataStore(), ctx,
-                f = function() { console.assert(false); };
 
-            ctx = dndx(src[0]).visualcue(f); // Create a source group
-            // No pair should be created at this moment
-            expect(ctx.pair).not.toEqual(jasmine.anything());
-            expect(countPairs(ds.pairs)).toBe(0);
+        describe("Object Construction", function() {
+            it("creates source groups", function() {
+                var src = ["#draggable0",], tgt = [".row1", ".row2", ".row3",],
+                    ds = dndx().dataStore(), ctx,
+                    f = function() { console.assert(false); };
 
-            // Create pairs with successive calls of dndx(srcSelector).targets()
-            ctx = dndx(src[0]).targets(tgt[0]).targets(tgt[1]).targets(tgt[2]);
-            expect(countPairs(ds.pairs)).toBe(3);
-            expect(ctx.pair.visualcue).toBe(f); // Each pair need to inherit source group properties
+                ctx = dndx(src[0]).visualcue(f); // Create a source group
+                // No pair should be created at this moment
+                expect(ctx.pair).not.toEqual(jasmine.anything());
+                expect(countPairs(ds.pairs)).toBe(0);
 
-            // dndx(srcSelector).targets(tgtSelector) and dndx(srcSelector, tgtSelector)
-            // should return identical objects
-            TEST_UTILS.objectsEqual(ctx, dndx(src[0], tgt[2]));
+                // Create pairs with successive calls of dndx(srcSelector).targets()
+                ctx = dndx(src[0]).targets(tgt[0]).targets(tgt[1]).targets(tgt[2]);
+                expect(countPairs(ds.pairs)).toBe(3);
+                expect(ctx.pair.visualcue).toBe(f); // Each pair need to inherit source group properties
 
-            f = function() {
-                dndx().targets(tgt[0]);
-            };
-            expect(f).toThrowError();
-        });
+                // dndx(srcSelector).targets(tgtSelector) and dndx(srcSelector, tgtSelector)
+                // should return identical objects
+                TEST_UTILS.objectsEqual(ctx, dndx(src[0], tgt[2]));
 
-        it("creates pairs", function() {
-            var src = ["#draggable0", "#draggable1",], tgt = [".row1", ".row2", ".row3",],
-                pairCount = src.length*tgt.length,
-                ds = dndx().dataStore(), s, t, p; 
+                f = function() {
+                    dndx().targets(tgt[0]);
+                };
+                expect(f).toThrowError();
+            });
 
-            jasmine.createSamplePairs(src, tgt);
-            expect(countPairs(ds.pairs)).toEqual(pairCount);
+            it("creates pairs", function() {
+                var src = ["#draggable0", "#draggable1",], tgt = [".row1", ".row2", ".row3",],
+                    pairCount = src.length*tgt.length,
+                    ds = dndx().dataStore(), s, t, p; 
 
-            for (s=0; s<src.length; ++s) {
-                expect(ds.pairs[src[s]]).toEqual(jasmine.anything());
-                for (t=0; t<tgt.length; ++t) {
-                    p = ds.pairs[src[s]][tgt[t]];
-                    expect($.isEmptyObject(p)).toBe(false);
+                jasmine.createSamplePairs(src, tgt);
+                expect(countPairs(ds.pairs)).toEqual(pairCount);
+
+                for (s=0; s<src.length; ++s) {
+                    expect(ds.pairs[src[s]]).toEqual(jasmine.anything());
+                    for (t=0; t<tgt.length; ++t) {
+                        p = ds.pairs[src[s]][tgt[t]];
+                        expect($.isEmptyObject(p)).toBe(false);
+                    }
                 }
-            }
 
-            // jQuery UI's draggable & droppable objects should be created
-            expect($("#draggable0.ui-draggable")).toBeInDOM();
-            expect($("#draggable1.ui-draggable")).toBeInDOM();
-            expect($(".row1.ui-droppable")).toBeInDOM();
-            expect($(".row2.ui-droppable")).toBeInDOM();
-            expect($(".row3.ui-droppable")).toBeInDOM();
-        });
-
-        it("removes all pairs at once", function() {
-            var ds = dndx().dataStore(), removeUnderlingObjects = TEST_UTILS.getRandomBool(); 
-
-            jasmine.createSamplePairs();
-
-            dndx().remove(removeUnderlingObjects);
-            expect(countPairs(ds.pairs)).toBe(0);
-
-            if (removeUnderlingObjects)
-                expect($(".ui-draggable, .ui-droppable")).not.toBeInDOM();
-            else
-                expect($(".ui-draggable, .ui-droppable")).toBeInDOM();
-        });
-
-        it("removes pairs associated with a specific source", function() {
-            var ds = dndx().dataStore(), removeUnderlingObjects = TEST_UTILS.getRandomBool(); 
-
-            jasmine.createSamplePairs();
-
-            dndx("#draggable1").remove(removeUnderlingObjects);
-            expect(countPairs(ds.pairs)).toEqual(3);
-            expect(ds.pairs["#draggable1"]).toEqual(undefined);
-
-            if (removeUnderlingObjects)
-                expect($("#draggable1.ui-draggable")).not.toBeInDOM();
-            else
-                expect($("#draggable1.ui-draggable")).toBeInDOM();
-
-            expect($("#draggable0.ui-draggable")).toBeInDOM();
-            expect($(".row1.ui-droppable")).toBeInDOM();
-            expect($(".row2.ui-droppable")).toBeInDOM();
-            expect($(".row3.ui-droppable")).toBeInDOM();
-        });
-
-        it("removes individual pairs", function() {
-            var src = ["#draggable0", "#draggable1",], tgt = [".row1", ".row2", ".row3",],
-                pairCount = src.length*tgt.length,
-                ds = dndx().dataStore(), removeUnderlingObjects = TEST_UTILS.getRandomBool(); 
-
-            jasmine.createSamplePairs(src, tgt);
-
-            dndx("#draggable0", ".row1").remove(removeUnderlingObjects);
-            expect(countPairs(ds.pairs)).toEqual(--pairCount);
-            expect(ds.pairs["#draggable0"]).toEqual(jasmine.anything());
-            expect(ds.pairs["#draggable0"][".row1"]).toEqual(undefined);
-
-            dndx("#draggable0", ".row2").remove(removeUnderlingObjects);
-            expect(countPairs(ds.pairs)).toEqual(--pairCount);
-            expect(ds.pairs["#draggable0"][".row2"]).toEqual(undefined);
-
-            dndx("#draggable0", ".row3").remove(removeUnderlingObjects);
-            expect(countPairs(ds.pairs)).toEqual(--pairCount);
-            expect(ds.pairs["#draggable0"]).toEqual(undefined);
-            expect(ds.pairs["#draggable1"]).toEqual(jasmine.anything());
-
-            if (removeUnderlingObjects)
-                expect($("#draggable0.ui-draggable")).not.toBeInDOM();
-            else
+                // jQuery UI's draggable & droppable objects should be created
                 expect($("#draggable0.ui-draggable")).toBeInDOM();
+                expect($("#draggable1.ui-draggable")).toBeInDOM();
+                expect($(".row1.ui-droppable")).toBeInDOM();
+                expect($(".row2.ui-droppable")).toBeInDOM();
+                expect($(".row3.ui-droppable")).toBeInDOM();
+            });
 
-            expect($(".row1.ui-droppable")).toBeInDOM();
-            expect($(".row2.ui-droppable")).toBeInDOM();
-            expect($(".row3.ui-droppable")).toBeInDOM();
+            it("can create a new pair from an existing settings", function() {
+                var srcPair, newPair, draggables, newId;
+
+                jasmine.createSamplePairs();
+
+                draggables = $(".draggable"); 
+                newId = draggables.length;
+                draggables.last().after("<div id='draggable"+newId+"' class='draggable'><span>"+newId+"</span></div>");
+                expect($("#draggable2")).toBeInDOM();
+
+                dndx("#draggable0", ".row1").newPair("#draggable2", ".row1");
+                srcPair = dndx("#draggable0", ".row1").pair, newPair = dndx("#draggable2", ".row1").pair;
+                TEST_UTILS.objectsEqual(srcPair, newPair, true);
+
+                dndx("#draggable0", ".row1").newPair("#draggable3", ".row1").ondrop(function() {});
+                srcPair = dndx("#draggable0", ".row1").pair, newPair = dndx("#draggable3", ".row1").pair;
+                expect(srcPair).not.toEqual(newPair);
+
+                // Following invocation doesn't make sense, but let's confirm nothing happens anyway
+                TEST_UTILS.objectsEqual(newPair, dndx("#draggable3", ".row1").newPair("#draggable3", ".row1").pair);
+
+                newPair = dndx("#draggable0", ".row1").newPair(null, ".row4").pair;// same as .newPair("#draggable0", ".row4")
+                TEST_UTILS.objectsEqual(newPair, dndx("#draggable0", ".row4").pair);
+            });
         });
 
-        it("can create a new pair from an existing settings", function() {
-            var srcPair, newPair, draggables, newId;
+        describe("Object Removal", function() {
+            it("removes all pairs at once", function() {
+                var ds = dndx().dataStore(), removeUnderlingObjects = TEST_UTILS.getRandomBool(); 
 
-            jasmine.createSamplePairs();
+                jasmine.createSamplePairs();
 
-            draggables = $(".draggable"); 
-            newId = draggables.length;
-            draggables.last().after("<div id='draggable"+newId+"' class='draggable'><span>"+newId+"</span></div>");
-            expect($("#draggable2")).toBeInDOM();
+                dndx().remove(removeUnderlingObjects);
+                expect(countPairs(ds.pairs)).toBe(0);
 
-            dndx("#draggable0", ".row1").newPair("#draggable2", ".row1");
-            srcPair = dndx("#draggable0", ".row1").pair, newPair = dndx("#draggable2", ".row1").pair;
-            TEST_UTILS.objectsEqual(srcPair, newPair, true);
+                if (removeUnderlingObjects)
+                    expect($(".ui-draggable, .ui-droppable")).not.toBeInDOM();
+                else
+                    expect($(".ui-draggable, .ui-droppable")).toBeInDOM();
+            });
 
-            dndx("#draggable0", ".row1").newPair("#draggable3", ".row1").ondrop(function() {});
-            srcPair = dndx("#draggable0", ".row1").pair, newPair = dndx("#draggable3", ".row1").pair;
-            expect(srcPair).not.toEqual(newPair);
+            it("removes pairs associated with a specific source", function() {
+                var ds = dndx().dataStore(), removeUnderlingObjects = TEST_UTILS.getRandomBool(); 
 
-            // Following invocation doesn't make sense, but let's confirm nothing happens anyway
-            TEST_UTILS.objectsEqual(newPair, dndx("#draggable3", ".row1").newPair("#draggable3", ".row1").pair);
+                jasmine.createSamplePairs();
 
-            newPair = dndx("#draggable0", ".row1").newPair(null, ".row4").pair;// same as .newPair("#draggable0", ".row4")
-            TEST_UTILS.objectsEqual(newPair, dndx("#draggable0", ".row4").pair);
+                dndx("#draggable1").remove(removeUnderlingObjects);
+                expect(countPairs(ds.pairs)).toEqual(3);
+                expect(ds.pairs["#draggable1"]).toEqual(undefined);
+
+                if (removeUnderlingObjects)
+                    expect($("#draggable1.ui-draggable")).not.toBeInDOM();
+                else
+                    expect($("#draggable1.ui-draggable")).toBeInDOM();
+
+                expect($("#draggable0.ui-draggable")).toBeInDOM();
+                expect($(".row1.ui-droppable")).toBeInDOM();
+                expect($(".row2.ui-droppable")).toBeInDOM();
+                expect($(".row3.ui-droppable")).toBeInDOM();
+            });
+
+            it("removes individual pairs", function() {
+                var src = ["#draggable0", "#draggable1",], tgt = [".row1", ".row2", ".row3",],
+                    pairCount = src.length*tgt.length,
+                    ds = dndx().dataStore(), removeUnderlingObjects = TEST_UTILS.getRandomBool(); 
+
+                jasmine.createSamplePairs(src, tgt);
+
+                dndx("#draggable0", ".row1").remove(removeUnderlingObjects);
+                expect(countPairs(ds.pairs)).toEqual(--pairCount);
+                expect(ds.pairs["#draggable0"]).toEqual(jasmine.anything());
+                expect(ds.pairs["#draggable0"][".row1"]).toEqual(undefined);
+
+                dndx("#draggable0", ".row2").remove(removeUnderlingObjects);
+                expect(countPairs(ds.pairs)).toEqual(--pairCount);
+                expect(ds.pairs["#draggable0"][".row2"]).toEqual(undefined);
+
+                dndx("#draggable0", ".row3").remove(removeUnderlingObjects);
+                expect(countPairs(ds.pairs)).toEqual(--pairCount);
+                expect(ds.pairs["#draggable0"]).toEqual(undefined);
+                expect(ds.pairs["#draggable1"]).toEqual(jasmine.anything());
+
+                if (removeUnderlingObjects)
+                    expect($("#draggable0.ui-draggable")).not.toBeInDOM();
+                else
+                    expect($("#draggable0.ui-draggable")).toBeInDOM();
+
+                expect($(".row1.ui-droppable")).toBeInDOM();
+                expect($(".row2.ui-droppable")).toBeInDOM();
+                expect($(".row3.ui-droppable")).toBeInDOM();
+            });
+
+        });
+
+        describe("Cursor Type Management", function() {
+            it("sets cursor types at the time of calling .cursor()", function() {
+                var ds = dndx().dataStore();
+                jasmine.createSamplePairs();
+
+                dndx().cursor("auto", "alias");
+                expect(ds.protoPair.cursorForDrag).toBe("auto");
+                expect($("#draggable0").css("cursor")).toBe("alias");
+
+                var src = dndx("#draggable0").cursor("default", "help").sourceGroup();
+                expect(src.cursorForDrag).toBe("default");
+                expect(ds.protoPair.cursorForDrag).toBe("auto");
+                expect($("#draggable0").css("cursor")).toBe("help");
+            });
+
+            it("sets cursor types when refreshing objects", function() {
+                dndx(".draggable", ".droppable");
+                dndx().cursor("alias", "crosshair");
+                var obj = $("<div class='draggable'>").appendTo($("body"));
+                expect(obj).toBeInDOM();
+                var src = dndx(".draggable").refresh().sourceGroup();
+                expect(src.cursorForDrag).toBe("alias");
+                expect(obj.css("cursor")).toBe("crosshair");
+                expect($(".draggable").css("cursor")).toBe("crosshair");
+            });
+
+            it("inherits global cursor types when creating new objects", function() {
+                dndx().cursor("alias", "context-menu");
+                dndx(".draggable", ".droppable");
+                expect($(".draggable").css("cursor")).toBe("context-menu");
+            });
         });
 
         it("disables or enables pairs", function() {
