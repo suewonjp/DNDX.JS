@@ -444,6 +444,8 @@ var dndx = null;
 
     function cleanup() {
         unbindEventHandlers();
+        $("."+srcClassName).removeData(srcDataKey).removeClass(srcClassName);
+        $("."+tgtClassName).removeClass(tgtClassName);
         apiOwner = dataStore = null;
     }
 
