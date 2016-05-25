@@ -345,13 +345,13 @@ var dndx = null;
     function showCurvedArrow($tgtObj) {
         if (! $tgtObj || ! $tgtObj.length)
             return;
-        var i, c = $tgtObj.length, rc, left, top, container = $("#dndx-visualcue-arrow"), arrow;
+        var i, c = $tgtObj.length, rc, container = $("#dndx-visualcue-arrow"), arrow;
         if (! container.length) 
             container = $("<div id='dndx-visualcue-arrow'>").appendTo($("body"));
         for (i=0; i<c; ++i) {
-            rc = $tgtObj[i].getBoundingClientRect(), left = rc.left + rc.width*0.5, top = rc.top + rc.height*0.5;
+            rc = $tgtObj[i].getBoundingClientRect();
             arrow = $("<div class='dndx-visualcue-arrow ui-front'>").appendTo(container);
-            arrow.offset({ top:top, left:left, });
+            arrow.offset({ top:rc.top, left:rc.left, });
         }
     }
 
@@ -438,11 +438,11 @@ var dndx = null;
                 hideCurvedArrow();
                 break;
             case "dropover": 
-                $tgtObj.addClass("dndx-visualcue-interior-red");
+                $tgtObj.addClass("dndx-visualcue-exterior-aqua");
                 break;
             case "dropout":
             case "drop":
-                $tgtObj.removeClass("dndx-visualcue-interior-red");
+                $tgtObj.removeClass("dndx-visualcue-exterior-aqua");
                 break;
             }
         },
