@@ -293,3 +293,11 @@ Removes pairs.
 
 Notice that this method returns nothing, which means another method can't be chained to the tail. ( Doing more work for removed objects doesn't make sense. ) Thus, you need to place this method at the end of the call chain.
 
+###### .destroy()
+Destroys every pair and infrastructure of the library.
+
+Like .remove(), this method returns nothing, which means another method can't be chained to the tail.
+
+###### dndx.destroy()
+Does the same thing as .destroy(), but it doesn't nned to be chained to dndx() call.
+
