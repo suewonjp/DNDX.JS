@@ -14,6 +14,8 @@ DNDX.JS has adopted [Method Call Chaining idiom ](https://en.wikipedia.org/wiki/
 
 To make this kind of call chaining happen, DNDX.JS APIs return some sort of objects, but they are meant to be hidden or internal. You don't need to retain any of them.
 
+* * *
+
 #### Concepts
 ###### Sources & Targets
 Most Drag & Drop (D&D) UI interactions involve SOURCE objects to drag and TARGET objects to accept them. In DNDX.JS, sources use jQuery UI Draggable Widget, and targets use jQuery UI Droppable Widget for their underlying functionalities.
@@ -72,6 +74,8 @@ See the API References for more details
  - originalPosition : [ for only "dragstop" ] Original CSS position (before starting dragging) of the source as { top, left } object. 
  - offset : Current CSS offset position (relative to the document) of the source as { top, left } object. 
  - event : The event object.
+
+* * *
 
 #### API References
 ###### dndx(srcSelector, tgtSelector)
