@@ -1,0 +1,78 @@
+@keyframes dndx-kf-bg-pos { 
+    0% { background-position:0%; }
+    100% { background-position:100%; }
+}
+
+@keyframes dndx-kf-swing {
+    0% { transform: rotate(1.5deg); }
+    100% { transform: rotate(-1.5deg); }
+}
+
+@keyframes dndx-kf-opaque-in {
+  from { opacity: 0; }
+  to { opacity: 0.8; }
+}
+
+.dndx-visualcue-swing {
+    animation: dndx-kf-swing 1s ease 0s infinite alternate;
+}
+
+.dndx-visualcue-gradient {
+    background-size: 200%;
+    background-image: linear-gradient(to right, aqua, moccasin 90%);
+    animation: dndx-kf-bg-pos 3s ease 0s infinite alternate;
+}
+
+.dndx-visualcue-overlay {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0.8;
+    transition: opacity 250ms ease;
+    animation: dndx-kf-opaque-in 250ms ease;
+}
+
+.dndx-visualcue-exterior-aqua {
+    box-shadow: 0px 0px 10px 10px aqua;
+}
+
+.dndx-visualcue-interior-red {
+    box-shadow: 0px 0px 10px 5px orangered inset;
+}
+
+.dndx-visualcue-underline {
+    position: fixed;
+    height: 6px;
+    border-radius: 3px;
+}
+
+/* 
+ * Original code can be found at:
+ * https://css-tricks.com/examples/ShapesOfCSS/ 
+ * */
+.dndx-visualcue-arrow {
+    position: relative;
+    width: 0;
+    height: 0;
+    border-top: 12px solid transparent;
+    border-right: 12px solid red;
+    transform: rotate(10deg);
+}
+.dndx-visualcue-arrow:after {
+    content: "";
+    position: absolute;
+    border: 0 solid transparent;
+    border-top: 4px solid red;
+    border-radius: 20px 0 0 0;
+    top: -14px;
+    left: -10px;
+    width: 16px;
+    height: 12px;
+    transform: rotate(45deg);
+}
+
+.dndx-bgclr-aqua {
+    background-color: aqua;
+}
+
