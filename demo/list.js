@@ -4,7 +4,7 @@
 function createListDemoScene($) {
     var listHelper = {
         getInsertablePosition : function($srcObj, $listContainer) {
-            var items = $listContainer.children(), result = 0;
+            var items = $listContainer.children(), result = items.length;
             if (items.length) { // When <ul> or <ol> has <li> items
                 var srcRc = $srcObj[0].getBoundingClientRect(),
                     hh = srcRc.height*0.5, srcY = srcRc.top + hh, h = items.outerHeight(true),
@@ -64,13 +64,13 @@ function createListDemoScene($) {
                 $tgtObj.removeClass("dndx-visualcue-exterior-aqua");
                 break;
             case "dropover": 
-                $tgtObj.addClass("dndx-visualcue-interior-red");
+                $tgtObj.addClass("dndx-visualcue-interior-red").css("min-height", $tgtObj.height());
                 listHelper.elongateSize($srcObj, true);
                 break;
             case "dropout":
             case "drop":
                 listHelper.elongateSize($srcObj, false);
-                $tgtObj.removeClass("dndx-visualcue-interior-red");
+                $tgtObj.removeClass("dndx-visualcue-interior-red").css("min-height", null);
                 break;
             }
         },
