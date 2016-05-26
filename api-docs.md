@@ -196,6 +196,7 @@ The callback accepts following arguments:
 - srcSelector : source selector string for the pair
 - tgtSelector : target selector string for the pair
 
+e.g.:
 
         // To reject every object with a class ".blocked", assign a callback like so:
         function onCheckPair($srcObj, $tgtObj, srcSelector, tgtSelector) {
@@ -203,6 +204,8 @@ The callback accepts following arguments:
         }
 
         dndx().oncheckpair(onCheckPair);
+
+
 ###### .onconflict(cb)
 Specifies a conflict resolution callback. A _Conflict Resolution_ means resolving which target will get priority whan the dropover event involves multiple target objects.
 
@@ -230,6 +233,8 @@ You need to return either of the two targets and the returned target would be ac
             // And you don't care about other targets. (Just first come, first served)
             return $tgtObj0;
         }
+
+
 ###### .onactivate(cb)
 Specifies a callback for _dropactivate_ event. See [events](#events) for dropactivate event and its callback signature.
 
