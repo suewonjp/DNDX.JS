@@ -99,9 +99,9 @@ function enterBasicDemoScene($, $panel) {
     //
     // -- This will be called as soon as a source object is dropped on a target object
     function onDrop(eventType, $srcObj, $tgtObj) {
-        //$tgtObj.animateCss("bounce");
         if ($tgtObj.is(".ui-dialog") === false)
-            $tgtObj.effect("bounce", "slow");
+            $tgtObj.animateCss("bounce");
+            //$tgtObj.effect("bounce", "slow");
     }
 
     //

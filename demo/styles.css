@@ -42,7 +42,20 @@ pre {
 }
 
 #intro .animation {
-    /*background-color: moccasin;*/
+    display: flex;
+    position: relative;
+}
+
+#intro .animation .fa-trash {
+    margin: auto;
+}
+
+#intro .animation .fa-envelope {
+    padding: 1px;
+    position: absolute;
+    top: 50%;
+    left: -25%;
+    color: lightblue;
 }
 
 #intro p {

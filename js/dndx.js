@@ -78,7 +78,7 @@ var dndx = null;
                 cbOut: noop,
                 cbDrop: noop,
                 cursorForDrag: "move",
-                cursorForHover: "pointer",
+                cursorForHover: "",
             },
         };
     }
@@ -106,7 +106,7 @@ var dndx = null;
 
     function setupSource(pairs, srcSelector) {
         // Create a new jQuery ui draggable object
-        createDraggable(srcSelector);
+        createDraggable(srcSelector).css("cursor", dataStore.protoPair.cursorForHover);
 
         // Create a new slot for the given source selector
         pairs[srcSelector] = pairs[srcSelector] || {};
@@ -166,15 +166,25 @@ var dndx = null;
         }
     }
 
+    function constructDraggable($obj, options, srcSelector) {
+        $obj.draggable(options).addClass(srcClassName);
+        embedSourceKey($obj, srcSelector);
+    }
+
+    function constructDroppable($obj, options) {
+        $obj.droppable(options).addClass(tgtClassName);
+    }
+
     function createDraggable(srcSelector) {
         var $obj = $(srcSelector);
-        $obj.draggable(dataStore.protoDraggableOptions).addClass(srcClassName);
-        embedSourceKey($obj, srcSelector);
+        constructDraggable($obj, dataStore.protoDraggableOptions, srcSelector);
+        return $obj;
     }
 
     function createDroppable(srcSelector, tgtSelector) {
         var $obj = $(tgtSelector);
-        $obj.droppable(dataStore.protoDroppableOptions).addClass(tgtClassName);
+        constructDroppable($obj, dataStore.protoDroppableOptions);
+        return $obj;
     }
 
     function extendDraggableOptions(originalOptions, optionsToAdd) {
@@ -200,23 +210,27 @@ var dndx = null;
     function refreshDraggable(srcSelector, options) {
         var $obj = $(srcSelector), instance = $obj.draggable("instance"),
             finalOptions = extendDraggableOptions(instance ? instance.options : {}, options);
-        $obj.draggable(finalOptions).addClass(srcClassName);
-        embedSourceKey($obj, srcSelector);
+        constructDraggable($obj, finalOptions, srcSelector);
+        return $obj;
     }
 
     function refreshDroppable(srcSelector, tgtSelector, options) {
-        var $obj = $(tgtSelector), instance = $obj.droppable("instance");
-        $obj.droppable(extendDroppableOptions(instance ? instance.options : {}, options)).addClass(tgtClassName);
+        var $obj = $(tgtSelector), instance = $obj.droppable("instance"),
+            finalOptions = extendDroppableOptions(instance ? instance.options : {}, options);
+        constructDroppable($obj, finalOptions);
+        return $obj;
     }
 
-    function refreshPair(srcSelector, tgtSelector) { 
-        refreshDraggable(srcSelector);
+    function refreshPair(srcSelector, tgtSelector, pair) { 
+        refreshDraggable(srcSelector).css("cursor", pair.cursorForHover);
         refreshDroppable(srcSelector, tgtSelector);
     }
 
     function refreshPairs(pairs) {
         forEachSelector(pairs, function(srcSelector) {
-            refreshDraggable(srcSelector, dataStore.protoDraggableOptions);
+            var srcSettings = pairs[srcSelector][srcClassName];
+            refreshDraggable(srcSelector, dataStore.protoDraggableOptions)
+                .css("cursor", srcSettings.cursorForHover);
         }, function(srcSelector, tgtSelector) {
             refreshDroppable(srcSelector, tgtSelector, dataStore.protoDroppableOptions);
         });
@@ -331,13 +345,13 @@ var dndx = null;
     function showCurvedArrow($tgtObj) {
         if (! $tgtObj || ! $tgtObj.length)
             return;
-        var i, c = $tgtObj.length, rc, left, top, container = $("#dndx-visualcue-arrow"), arrow;
+        var i, c = $tgtObj.length, rc, container = $("#dndx-visualcue-arrow"), arrow;
         if (! container.length) 
             container = $("<div id='dndx-visualcue-arrow'>").appendTo($("body"));
         for (i=0; i<c; ++i) {
-            rc = $tgtObj[i].getBoundingClientRect(), left = rc.left + rc.width*0.5, top = rc.top + rc.height*0.5;
+            rc = $tgtObj[i].getBoundingClientRect();
             arrow = $("<div class='dndx-visualcue-arrow ui-front'>").appendTo(container);
-            arrow.offset({ top:top, left:left, });
+            arrow.offset({ top:rc.top, left:rc.left, });
         }
     }
 
@@ -424,11 +438,11 @@ var dndx = null;
                 hideCurvedArrow();
                 break;
             case "dropover": 
-                $tgtObj.addClass("dndx-visualcue-interior-red");
+                $tgtObj.addClass("dndx-visualcue-exterior-aqua");
                 break;
             case "dropout":
             case "drop":
-                $tgtObj.removeClass("dndx-visualcue-interior-red");
+                $tgtObj.removeClass("dndx-visualcue-exterior-aqua");
                 break;
             }
         },
@@ -465,7 +479,8 @@ var dndx = null;
 
         apiOwner.draggableOptions = function(options) {
             if (this.srcSelector) {
-                refreshDraggable(this.srcSelector, options);
+                refreshDraggable(this.srcSelector, options)
+                    .css("cursor", this.source[srcClassName].cursorForHover);
             }
             else {
                 extendDraggableOptions(dataStore.protoDraggableOptions, options);
@@ -512,16 +527,10 @@ var dndx = null;
         };
 
         apiOwner.onstart = function(cb) {
-            if (this.pair) {
-                triggerException("Should not be called from the pair level!");
-            }
             assignCallback(null, this.source, "cbStart", cb, noop);
             return this;
         };
         apiOwner.onstop = function(cb) {
-            if (this.pair) {
-                triggerException("Should not be called from the pair level!");
-            }
             assignCallback(null, this.source, "cbStop", cb, noop);
             return this;
         };
@@ -558,7 +567,7 @@ var dndx = null;
 
         apiOwner.refresh = function() {
             if (this.srcSelector && this.tgtSelector) {
-                refreshPair(this.srcSelector, this.tgtSelector);
+                refreshPair(this.srcSelector, this.tgtSelector, this.pair);
             }
             if (this.source) {
                 var tmp = {};
@@ -625,11 +634,12 @@ var dndx = null;
         };
 
         apiOwner.cursor = function(dragType, hoverType) {
-            if (this.pair)
-                return this;
             var owner = (this.source && this.source[srcClassName]) || dataStore.protoPair;
             owner.cursorForDrag = dragType || "move";
-            owner.cursorForHover = hoverType || "pointer";
+            if (hoverType) {
+                owner.cursorForHover = hoverType;
+                $(this.srcSelector ? this.srcSelector : "." + srcClassName).css("cursor", hoverType);
+            }
             return this;
         };
 
