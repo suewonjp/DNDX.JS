@@ -81,32 +81,39 @@ See the API References for more details
 ###### dndx(srcSelector, tgtSelector)
 This is the most important API and every method chaining will start from this API. When this function is invoked for the 1st time, it will construct all infrastructure to manage pairs, and then construct pairs specified by the user, if any.
 
-srcSelector and tgtSelector are supposed to be valid CSS selector strings or omitted.
+_srcSelector_ and _tgtSelector_ are supposed to be valid CSS selector strings or omitted.
 
 As stated above, DNDX.JS has three levels of configuration range, and the level will be determined by how you pass parameters in to this function.
 - When srcSelector and tgtSelector are all omitted.
-  - This indicates the Global Level mode.
+  - This indicates the **Global Level** mode.
 
-          dndx().visualcue("Exterior").ondrop(onDrop);
+          dndx()
+              .visualcue("Exterior")
+              .ondrop(onDrop);
 
-          // Now, all pairs will trigger Exterior visual cue whenver you drag a source object, and they will call the onDrop callback whenever a source object is dropped to a target object.  
+          // Now, all pairs will trigger "Exterior" visual cue whenver you drag a source object,
+          // and they will call the onDrop callback whenever a source object is dropped to a target object.  
           // This will force default settings for whichever pair you create.  
           // But, global settings like this can be easily overridable.
 - When srcSelector is a valid CSS selector and tgtSelector is omitted.
-  - This indicates the Source Group level mode.
+  - This indicates the **Source Group Level** mode.
 
             dndx(".pl-list-container li")
                 .draggableOptions({ revert: true, }u>)
                 .onstart(onStart)
                 .ondrop(onDrop);
 
-            // The settings will be applied to all pairs having source objects represented by ".pl-list-container li" selector except any of pairs that have their own settings.
+            // The settings will be applied to all pairs 
+            // having source objects represented by ".pl-list-container li" selector 
+            // except any of pairs that have their own settings.
 - When srcSelector and tgtSelector are all valid CSS selectors.
-  - This indicates the Pair Level mode.
+  - This indicates the **Pair Level** mode.
 
-            dndx(".pl-list-container li, .droppable-container").ondrop(specialCallback);
+            dndx(".pl-list-container li", ".droppable-container")
+                .ondrop(specialCallback);
 
-            // The particular pair represented by ".pl-list-container li" (a source selector), ".droppable-container" (a target selector) will call specialCallback when the drop event occurs for the corresponding pair.
+            // The particular pair represented by ".pl-list-container li" (a source selector), ".droppable-container" (a target selector) 
+            // will call specialCallback when the drop event occurs for the corresponding pair.
 
 
 ###### .targets(tgtSelector)
