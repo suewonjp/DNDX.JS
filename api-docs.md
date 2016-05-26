@@ -170,7 +170,7 @@ An example callback of custom visual cue behavior:
                     break;
             }
 
-How to use the "fallback" option:
+How to use the _"fallback"_ option:
 
         // No visual cue for the Global Level
         dndx().visualcue("Nothing"). 
@@ -204,7 +204,7 @@ The callback accepts following arguments:
 
         dndx().oncheckpair(onCheckPair);
 ###### .onconflict(cb)
-Specifies a conflict resolution callback. A Conflict Resolution means resolving which target will get priority whan the dropover event involves multiple target objects.
+Specifies a conflict resolution callback. A _Conflict Resolution_ means resolving which target will get priority whan the dropover event involves multiple target objects.
 
 See more discussion about Conflict Resolution. [TO EDIT]
 
@@ -231,25 +231,30 @@ You need to return either of the two targets and the returned target would be ac
             return $tgtObj0;
         }
 ###### .onactivate(cb)
-Specifies a callback for dropactivate event. See [events](#events) for dropactivate event and callback signature.
+Specifies a callback for _dropactivate_ event. See [events](#events) for dropactivate event and its callback signature.
 
 ###### .ondeactivate(cb)
-Specifies a callback for dropdeactivate event. See [events](#events) for dropdeactivate event and callback signature.
+Specifies a callback for _dropdeactivate_ event. See [events](#events) for dropdeactivate event and its callback signature.
 
 ###### .onover(cb)
-Specifies a callback for dropover event. See [events](#events) for dropover event and callback signature.
+Specifies a callback for _dropover_ event. See [events](#events) for dropover event and its callback signature.
 
 ###### .onout(cb)
-Specifies a callback for dropout event. See [events](#events) for dropout event and callback signature.
+Specifies a callback for _dropout_ event. See [events](#events) for dropout event and its callback signature.
 
 ###### .ondrop(cb)
-Specifies a callback for drop event. See [events](#events) for drop event and callback signature.
+Specifies a callback for _drop_ event. See [events](#events) for drop event and its callback signature.
 
 ###### .onstart(cb)
-Specifies a callback for dragstart event. See [events](#events) for dragstart event and callback signature.
+Specifies a callback for _dragstart_ event. See [events](#events) for dragstart event and its callback signature.
 
+Notice that the dragstart/dragstop events have nothing to do with target objects. See the following code;
+
+        dndx(".draggable", "#trashcan").onstart(onStart);
+
+The code works, but might be misleading. .onstart() applies only to SOURCES, thus, the callback onStart will be called whenever any of source objects with "draggable" class start dragging; even for other pairs involved with the source. So do not assume the above code will only apply to the specific pair ( ".draggable", "#trashcan" )
 ###### .onstop(cb)
-Specifies a callback for dragstop event. See [events](#events) for dragstop event and callback signature.
+Specifies a callback for _dragstop_ event. See [events](#events) for dragstop event and its callback signature.
 
 ###### .nullify()
 Makes the pair not respond to any event and produce no visual cue. This is useful when you want some empty space to block further interactions in case that there are other objects behind it.
@@ -267,6 +272,7 @@ Creates a new pair represented by the CSS selector strings. This is similar to .
             // The above settings will also apply to the new pair ("#icon0", ".droppable")
             newPair("#icon0, ".droppable);
 
+
 ###### .configure(configOptions)
 Specifies settings to control library-wide behaviors of DNDX.JS.
 
@@ -277,6 +283,7 @@ configOptions has following properties.
 
         // Throws an exception when the objects denoted by the selectors don't exist in the DOM tree.
         dndx(".dragging", ".droppable");
+
 
 ###### .disable()
 Disables pairs.
@@ -291,6 +298,8 @@ Sets cursor types for the source objects.
  - A cursor type for dragging. The default is "move"
 - hoverType [optional]  
  - A cursor type for hovering on the source object before dragging. The default is "auto"
+
+Use of this method to a specific pair might be misleading like [.onstart()](#onstartcb) or .onstop()
 
 ###### .remove()
 Removes pairs.

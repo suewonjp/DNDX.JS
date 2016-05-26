@@ -527,16 +527,10 @@ var dndx = null;
         };
 
         apiOwner.onstart = function(cb) {
-            if (this.pair) {
-                triggerException("Should not be called from the pair level!");
-            }
             assignCallback(null, this.source, "cbStart", cb, noop);
             return this;
         };
         apiOwner.onstop = function(cb) {
-            if (this.pair) {
-                triggerException("Should not be called from the pair level!");
-            }
             assignCallback(null, this.source, "cbStop", cb, noop);
             return this;
         };
