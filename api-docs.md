@@ -216,7 +216,7 @@ e.g.:
 ###### .onconflict(cb)
 Specifies a conflict resolution callback. A _Conflict Resolution_ means resolving which target will get priority whan the dropover event involves multiple target objects.
 
-See more discussion about Conflict Resolution. [TO EDIT]
+See more discussion about [Conflict Resolution](https://github.com/suewonjp/DNDX.JS/wiki/DNDX.JS-Topic---Drag-&-Drop-Conflict-Resolution)
 
 The callback accepts following arguments:
 - $srcObj : A jQuery object for the source
@@ -271,7 +271,7 @@ Specifies a callback for _dragstop_ event. See [events](#events) for dragstop ev
 ###### .nullify()
 Makes the pair not respond to any event and produce no visual cue. This is useful when you want some empty space to block further interactions in case that there are other objects behind it.
 
-See related discussion for detail. [TO EDIT]
+See [related discussion](https://github.com/suewonjp/DNDX.JS/wiki/DNDX.JS-Topic---Drag-&-Drop-Conflict-Resolution) for detail.
 ###### .refresh()
 Refreshes the pairs and their data. This is necessary especially when you introduce new objects into the DOM structure.
 
