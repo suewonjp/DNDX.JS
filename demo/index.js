@@ -3,14 +3,21 @@
 
 (function($) {
 
-    //$.fn.extend({
-        //animateCss: function (animationName) {
-            //var animationEnd = "webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend";
-            //$(this).addClass("animated " + animationName).one(animationEnd, function() {
-                //$(this).removeClass("animated " + animationName);
-            //});
-        //},
-    //});
+    //
+    // This demo uses Animate.css, the collection of excellent CSS animations
+    // https://daneden.github.io/animate.css/
+    //
+    $.fn.extend({
+        animateCss: function (animationName, cb) {
+            var animationEnd = "webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend";
+            $(this).addClass("animated " + animationName).one(animationEnd, function() {
+                $(this).removeClass("animated " + animationName);
+                if (cb instanceof Function) {
+                    cb.call(this, animationName);
+                }
+            });
+        },
+    });
 
     function enterDemoScene($panel) {
         switch ($panel.attr("id")) {
@@ -34,7 +41,28 @@
         }
     }
 
-    function createIntroScene($) {}
+    function createIntroScene($) {
+        $("#intro .fa-trash").tooltip().tooltip("disable");
+
+        dndx("#intro .fa-envelope", "#intro .fa-trash")
+            .visualcue("Arrow")
+            .onstart(function (eventType, $srcObj, $tgtObj, etc) {
+                $srcObj.data("originalOffset", etc.offset);
+            })
+            .ondrop(function (eventType, $srcObj, $tgtObj) {
+                $srcObj.animateCss("fadeOutDown", function() {
+                    var $this = $(this);
+                    $this.offset($this.data("originalOffset"));
+                });
+                $tgtObj.animateCss("tada", function() {
+                    $("#intro .fa-trash").tooltip("enable").tooltip("open");
+                    setTimeout(function() {
+                        $("#intro .fa-trash").tooltip("close").tooltip("disable");
+                    }, 2000);
+                });
+            })
+            .cursor("move", "pointer");
+    }
     function enterIntroScene($, $panel) {}
     function leaveIntroScene($, $panel) {}
 

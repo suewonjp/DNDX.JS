@@ -2,6 +2,8 @@
 /*eslint no-unused-vars:0*/
 
 function createListDemoScene($) {
+    var $trashcan = $(".trashcan-container .fa").tooltip().tooltip("disable");
+
     var listHelper = {
         getInsertablePosition : function($srcObj, $listContainer) {
             var items = $listContainer.children(), result = items.length;
@@ -77,11 +79,21 @@ function createListDemoScene($) {
     }; 
 
     function trashListItem(eventType, $srcObj, $tgtObj) {
-        $srcObj.data("dndx-list-item-removed", true);
-        $srcObj.draggable("option", "revert", false);
-        $srcObj.toggle("fade", "slow", function() {
-            $srcObj.remove();
-        });
+        $srcObj
+            .draggable("option", "revert", false)
+            .animateCss("zoomOutDown", function() {
+                $trashcan.tooltip("enable")
+                    .tooltip("option", "content", "You really hate "+$(this).text() + " so much...")
+                    .tooltip("open")
+                    .animateCss("rubberBand")
+                    ;
+
+                setTimeout(function() {
+                    $trashcan.tooltip("close").tooltip("disable");
+                }, 2000);
+
+                $(this).remove();
+            });
     }
 
     dndx(".pl-list-container li")
@@ -91,7 +103,7 @@ function createListDemoScene($) {
             .visualcue(listHelper.visualcue)
             .ondrop(listHelper.onDrop)
         .targets(".trashcan-container .fa")
-            .visualcue("Exterior")
+            .visualcue("Arrow")
             .ondrop(trashListItem)
         ;
 }
