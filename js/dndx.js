@@ -83,22 +83,31 @@ var dndx = null;
         };
     }
 
-    //function forEachPair(pairs, cb) {
-        //for (var srcSelector in pairs) {
-            //for (var tgtSelector in pairs[srcSelector]) {
-                //cb(pairs[srcSelector][tgtSelector]);
-            //}
-        //}
-    //}
+    function makeCallableAnyway(f, df) {
+        df = df || noop;
+        return (f instanceof Function && f) || df;
+    }
+
+    function forEachPair(pairs, cb) {
+        if (cb instanceof Function === false)
+            return;
+        for (var srcSelector in pairs) {
+            for (var tgtSelector in pairs[srcSelector]) {
+                cb(srcSelector, tgtSelector, pairs[srcSelector][tgtSelector]);
+            }
+        }
+    }
 
     function forEachSelector(pairs, cbForSrc, cbForTgt) {
         var tgtSet = {};
+        cbForSrc = makeCallableAnyway(cbForSrc);
+        cbForTgt = makeCallableAnyway(cbForTgt);
         for (var srcSelector in pairs) {
             cbForSrc(srcSelector);
             for (var tgtSelector in pairs[srcSelector]) {
                 if (tgtSelector in tgtSet === false) {
                     tgtSet[tgtSelector] = true;
-                    cbForTgt(srcSelector, tgtSelector);
+                    cbForTgt(tgtSelector);
                 }
             }
         }
@@ -214,7 +223,7 @@ var dndx = null;
         return $obj;
     }
 
-    function refreshDroppable(srcSelector, tgtSelector, options) {
+    function refreshDroppable(tgtSelector, options) {
         var $obj = $(tgtSelector), instance = $obj.droppable("instance"),
             finalOptions = extendDroppableOptions(instance ? instance.options : {}, options);
         constructDroppable($obj, finalOptions);
@@ -223,7 +232,7 @@ var dndx = null;
 
     function refreshPair(srcSelector, tgtSelector, pair) { 
         refreshDraggable(srcSelector).css("cursor", pair.cursorForHover);
-        refreshDroppable(srcSelector, tgtSelector);
+        refreshDroppable(tgtSelector);
     }
 
     function refreshPairs(pairs) {
@@ -231,8 +240,8 @@ var dndx = null;
             var srcSettings = pairs[srcSelector][srcClassName];
             refreshDraggable(srcSelector, dataStore.protoDraggableOptions)
                 .css("cursor", srcSettings.cursorForHover);
-        }, function(srcSelector, tgtSelector) {
-            refreshDroppable(srcSelector, tgtSelector, dataStore.protoDroppableOptions);
+        }, function(tgtSelector) {
+            refreshDroppable(tgtSelector, dataStore.protoDroppableOptions);
         });
     }
 
@@ -489,8 +498,8 @@ var dndx = null;
             return this;
         };
         apiOwner.droppableOptions = function(options) {
-            if (this.srcSelector && this.tgtSelector) {
-                refreshDroppable(this.srcSelector, this.tgtSelector, options);
+            if (this.tgtSelector) {
+                refreshDroppable(this.tgtSelector, options);
             }
             else {
                 extendDroppableOptions(dataStore.protoDroppableOptions, options);
@@ -615,9 +624,7 @@ var dndx = null;
                 this.source[srcClassName].disabled = b;
             }
             else {
-                forEachSelector(this.pairs, function(srcSelector) {
-                    delete this.pairs[srcSelector][srcClassName].disabled;
-                }, function(srcSelector, tgtSelector) {
+                forEachPair(this.pairs, function(srcSelector, tgtSelector) {
                     delete this.pairs[srcSelector][tgtSelector].disabled;
                 });
                 dataStore.protoPair.disabled = b;
@@ -926,6 +933,20 @@ var dndx = null;
     }; 
 
     dndx.destroy = cleanup;
+
+    dndx.showOverlay = showOverlay;
+    dndx.hideOverlay = hideOverlay;
+    dndx.showUnderline = showUnderline;
+    dndx.hideUnderline = hideUnderline;
+    dndx.showCurvedArrow = showCurvedArrow;
+    dndx.hideCurvedArrow = hideCurvedArrow;
+
+    dndx.forEachPair = function(cb) {
+        forEachPair(dataStore.pairs, cb);
+    };
+    dndx.forEachSelector = function(cbForSrc, cbForTgt) {
+        forEachSelector(dataStore.pairs, cbForSrc, cbForTgt);
+    };
 
 }(jQuery));
 

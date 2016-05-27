@@ -290,31 +290,46 @@ describe("DNDX-CORE", function() {
             expect(pair.disabled).toBe(true);
         });
 
-        //it("can iterate over each pair", function() {
-            //var src = ["#draggable0", "#draggable1",], tgt = [".row1", ".row2", ".row3",],
-                //s, t, pairs = [], ds = dndx().dataStore(); 
+        it("can iterate over each pair", function() {
+            var src = ["#draggable0", "#draggable1",], tgt = [".row1", ".row2", ".row3",],
+                s, t, pairs = []; 
 
-            //for (s=0; s<src.length; ++s) {
-                //for (t=0; t<tgt.length; ++t) {
-                    //pairs.push([src[s], tgt[t]]);
-                //}
-            //}
-            //expect(pairs.length).toBe(6);
+            for (s=0; s<src.length; ++s) {
+                for (t=0; t<tgt.length; ++t) {
+                    pairs.push([src[s], tgt[t], ]);
+                }
+            }
+            expect(pairs.length).toBe(6);
 
-            //jasmine.createSamplePairs(src, tgt);
+            jasmine.createSamplePairs(src, tgt);
 
-            //dndx.forEachPair(function(srcSelector, tgtSelector, pair) {
-                //var idx = pairs.findIndex(function(el, idx, arr) {
-                    //return el[0] === srcSelector && el[1] === tgtSelector;
-                //});
-                //expect(idx).toBeGreaterThan(-1);
-                //pairs.splice(idx, 1);
-            //});
-            //expect(pairs.length).toBe(0);
-        //});
+            dndx.forEachPair(function(srcSelector, tgtSelector) {
+                var idx = pairs.findIndex(function(el) {
+                    return el[0] === srcSelector && el[1] === tgtSelector;
+                });
+                expect(idx).toBeGreaterThan(-1);
+                pairs.splice(idx, 1);
+            });
+            expect(pairs.length).toBe(0);
+        });
 
-        //it("can iterate over each selector", function() {
-        //});
+        it("can iterate over each selector", function() {
+            var src = ["#draggable0", "#draggable1",], tgt = [".row1", ".row2", ".row3",];
+
+            jasmine.createSamplePairs(src, tgt);
+
+            dndx.forEachSelector(function(srcSelector) {
+                var idx = src.indexOf(srcSelector);
+                expect(idx).toBeGreaterThan(-1);
+                src.splice(idx, 1);
+            }, function(tgtSelector) {
+                var idx = tgt.indexOf(tgtSelector);
+                expect(idx).toBeGreaterThan(-1);
+                tgt.splice(idx, 1);
+            });
+            expect(src.length).toBe(0);
+            expect(tgt.length).toBe(0);
+        });
 
         afterEach(function() {
             dndx.destroy();
