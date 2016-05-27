@@ -472,11 +472,10 @@ var dndx = null;
         apiOwner = dataStore = null;
     }
 
-    // This function defines all APIs (except dndx() function) for the library and associates them to the object 'apiOwner'
+    // This function defines all chainable methods for the library
     function defineAPIs() {
-        apiOwner = {}; // This object owns all public functions of the library
+        apiOwner = {}; // This object owns all public chainable methods of the library
 
-        // CHAINABLE METHODS
         apiOwner.targets = function(tgtSelector) {
             validateSelector(tgtSelector);
             if (!this.srcSelector) {
@@ -650,7 +649,6 @@ var dndx = null;
             return this;
         };
 
-        // NON CHAINABLE METHODS
         apiOwner.remove = function(removeUnderlingObjects) {
             removePair(this.srcSelector, this.tgtSelector, removeUnderlingObjects);
         };
