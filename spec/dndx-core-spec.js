@@ -290,6 +290,32 @@ describe("DNDX-CORE", function() {
             expect(pair.disabled).toBe(true);
         });
 
+        //it("can iterate over each pair", function() {
+            //var src = ["#draggable0", "#draggable1",], tgt = [".row1", ".row2", ".row3",],
+                //s, t, pairs = [], ds = dndx().dataStore(); 
+
+            //for (s=0; s<src.length; ++s) {
+                //for (t=0; t<tgt.length; ++t) {
+                    //pairs.push([src[s], tgt[t]]);
+                //}
+            //}
+            //expect(pairs.length).toBe(6);
+
+            //jasmine.createSamplePairs(src, tgt);
+
+            //dndx.forEachPair(function(srcSelector, tgtSelector, pair) {
+                //var idx = pairs.findIndex(function(el, idx, arr) {
+                    //return el[0] === srcSelector && el[1] === tgtSelector;
+                //});
+                //expect(idx).toBeGreaterThan(-1);
+                //pairs.splice(idx, 1);
+            //});
+            //expect(pairs.length).toBe(0);
+        //});
+
+        //it("can iterate over each selector", function() {
+        //});
+
         afterEach(function() {
             dndx.destroy();
         });
@@ -588,34 +614,6 @@ describe("DNDX-CORE", function() {
             dndx().onactivate("fallback");
             expect(dndx(src[0], tgt[0]).pair.cbActivate).toBe(cbGlobal);
             expect(dndx(src[0], tgt[1]).pair.cbActivate).toBe(cbGlobal);
-        });
-
-        it("can't assign .onstart()/.onstop() callbacks from the pair level", function() {
-            var src = ["#draggable0", "#draggable1",], tgt = [".row1", ".row2", ".row3",],
-                s, t, pair, f;
-
-            for (s=0; s<src.length; ++s) {
-                dndx(src[s]).onstart(cbSrcGrp);
-                dndx(src[s]).onstop(cbSrcGrp);
-            }
-
-            for (s=0; s<src.length; ++s) {
-                for (t=0; t<tgt.length; ++t) {
-                    pair = dndx(src[s], tgt[t]).pair;
-                    expect(pair.cbStart).toBe(cbSrcGrp); // Inherits a callback from the source level
-                    expect(pair.cbStop).toBe(cbSrcGrp); // Inherits a callback from the global level
-                }
-            }
-
-            // .onstart()/.onstop() can only be assigned from the global or source group level
-            f = function() {
-                dndx(src[0], tgt[0]).onstart(cbPair);
-            };
-            expect(f).toThrowError();
-            f = function() {
-                dndx(src[0], tgt[0]).onstop(cbPair);
-            };
-            expect(f).toThrowError();
         });
 
         afterEach(function() {
