@@ -150,7 +150,7 @@ Notice that calling this method for Source Group Level will have no effect.
 ###### .visualcue(param)
 Specifies visual effect. _param_ can be a string or callback. 
 
-See this [Wiki topic](https://github.com/suewonjp/DNDX.JS/wiki/Visual-Cues) to understand more about visucal cues.
+See this [Wiki topic](https://github.com/suewonjp/DNDX.JS/wiki/Visual-Cues) to understand more about visual cues.
 
 - To use one of the built-in visual cues, param should be one of the following strings
  - "Overlay"
