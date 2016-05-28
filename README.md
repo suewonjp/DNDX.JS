@@ -1,7 +1,7 @@
 ### DESCRIPTION
 [DNDX.JS](http://suewonjp.github.io/DNDX.JS/) is a Web Front End Javascript library enhancing jQuery UI's [Draggable](http://api.jqueryui.com/draggable/ "")/[Droppable](http://api.jqueryui.com/droppable/ "") Widget libraries. jQuery UI's Draggable and Droppable Widgets are doing a good job in providing us most of fundamental Drag & Drop functionalities. However, from my experience of having written some Drag & Drop UI code, we still need to take care of some higher level functionalities where jQuery UI's Draggable/Droppable Widgets don't cover for us.
 
-Main concern of DNDX.JS is providing you **HIGHER LEVEL** Drag & Drop features while delegating most of its lower level D&D functions to jQuery UI's Draggable and Droppable Widgets.
+Main concern of DNDX.JS is providing you **HIGHER LEVEL** [Drag & Drop](https://en.wikipedia.org/wiki/Drag_and_drop) features while delegating most of its lower level D&D functions to jQuery UI's Draggable and Droppable Widgets.
 
 A few key benefits of DNDX.JS are as follows:
 
@@ -9,16 +9,18 @@ A few key benefits of DNDX.JS are as follows:
     - D&D interactions need visual cues to give the user a hint about which object can be a drop target and which object is ready for the drop, etc.
     - DNDX.JS provides several CSS styles and animations to be used for out-of-box visual cues.
     - Also you can easily customize the visual cue or plug in your own visual cues.
+    - Refer to this [discussion](https://github.com/suewonjp/DNDX.JS/wiki/Visual-Cues) for more detail.
 1. _Friendly API_
     - DNDX.JS has adopted [Method Call Chaining idiom ](https://en.wikipedia.org/wiki/Method_chaining) like jQuery, thus it is easy to use.
     - DNDX.JS has been designed having real use cases in mind, and will make your code less messy and more manageable.
 1. _Resolving conflicts_ caused by multiple simultaneous D&D interactions
     - D&D interactions may easily become buggy in a highly dynamic and complicated view especially when multiple interactions occur simultaneously.
     - DNDX.JS provides a solution for this kind of issue.
+    - See more discussion about [Conflict Resolution](https://github.com/suewonjp/DNDX.JS/wiki/DNDX.JS-Topic---Drag-&-Drop-Conflict-Resolution)
 
 Try [the demo](http://suewonjp.github.io/DNDX.JS/) and find out what DNDX.JS can do!
 
-It also provides [API documentation](https://github.com/suewonjp/DNDX.JS/blob/master/api-docs.md).
+It also provides [API documentation](https://github.com/suewonjp/DNDX.JS/blob/master/api-docs.md) and [Wiki Topics](https://github.com/suewonjp/DNDX.JS/wiki) for a few key subjects.
 
 ### HOW TO USE
 Import _css/dndx.css_ and _js/dndx.js_ file into your HTML file like so:
@@ -26,6 +28,13 @@ Import _css/dndx.css_ and _js/dndx.js_ file into your HTML file like so:
     <link rel="stylesheet" href="css/dndx.css">
 
     <script src="js/dndx.js"></script>
+
+    dndx(".draggable", ".droppable")
+        .visualcue("Exterior")
+        .onstart(onStartCallback)
+        .onconflict(onConflictCallback)
+        .onover(onOverCallback)
+        .ondrop(onDropCallback);
 
 ### COPYRIGHT/LICENSE/DISCLAIMER
 

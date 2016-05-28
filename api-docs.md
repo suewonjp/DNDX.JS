@@ -1,3 +1,10 @@
+#### Contents
+1. [Convention or Style of APIs](#convention-or-style-of-apis)
+1. [Concepts](#concepts)
+1. [API References](#api-references)
+
+* * *
+
 #### Convention or Style of APIs
 ###### Method Call Chaining
 DNDX.JS has adopted [Method Call Chaining idiom ](https://en.wikipedia.org/wiki/Method_chaining) with which you might be familiar if you are a jQuery user. Basically, what you do is calling a series of methods connected from tail to head like so:
@@ -141,9 +148,11 @@ Sets jQuery UI Droppable options. Refer to [this page](http://api.jqueryui.com/d
 
 Notice that calling this method for Source Group Level will have no effect. 
 ###### .visualcue(param)
-Specifies visual effect. param can be a string or callback.
+Specifies visual effect. _param_ can be a string or callback. 
 
-- To use one of the builtin visual cues, param should be one of the following strings
+See this [Wiki topic](https://github.com/suewonjp/DNDX.JS/wiki/Visual-Cues) to understand more about visucal cues.
+
+- To use one of the built-in visual cues, param should be one of the following strings
  - "Overlay"
  - "Swing"
  - "Exterior"
@@ -177,15 +186,15 @@ An example callback of custom visual cue behavior:
                     break;
             }
 
-How to use the _"fallback"_ option:
+How to use the _"fallback"_ option: ( Refer to the concept of [Level](https://github.com/suewonjp/DNDX.JS/blob/master/api-docs.md#levels) )
 
         // No visual cue for the Global Level
         dndx().visualcue("Nothing"). 
 
-        // "Exterior" builtin visual cue for the Source Group Level
+        // "Exterior" built-in visual cue for the Source Group Level
         dndx(".draggable").visualcue("Exterior"). 
 
-        // "Swing" builtin visual cue for Pair Level
+        // "Swing" built-in visual cue for Pair Level
         dndx(".draggable", ".droppable").visualcue("Swing").
 
         dndx(".draggable", ".droppable").visualcue("fallback").
@@ -195,7 +204,7 @@ How to use the _"fallback"_ option:
         // Now the visual cue for the Source Group has become "Nothing" (fallen back to the Global Level)
 
 ###### .oncheckpair(cb)
-Specifies a callback to check a source/target object pair. The callback needs to return true to allow the object pair to be processed thereafter, and return false to reject the pair for further process.
+Specifies a callback to check a source/target object pair. The callback needs to return true to allow the object pair to be processed thereafter, and return false to reject the pair for subsequent events.
 
 The callback accepts following arguments:
 - $srcObj : A jQuery object for the source
@@ -205,7 +214,7 @@ The callback accepts following arguments:
 
 e.g.:
 
-        // To reject every object with a class ".blocked", assign a callback like so:
+        // To reject every target with a class ".blocked", assign a callback like so:
         function onCheckPair($srcObj, $tgtObj, srcSelector, tgtSelector) {
             return ! $tgtObj.hasClass("blocked");
         }
