@@ -298,74 +298,83 @@ var dndx = null;
         }
     }
 
-    function showOverlay(srcObj, $tgtObj) {
-        var id = "dndx-visualcue-canvas", canvas = document.getElementById(id),
-            ctx, i, c, $obj, rc, padding = 5;
+    function openCanvas(id, styleClasses, width, height, onCreated) {
+        var canvas = document.getElementById(id), ctx;
         if (!canvas) {
             canvas = document.createElement("canvas");
             document.body.appendChild(canvas);
             canvas.id = id;
-            canvas.className = "dndx-visualcue-overlay ui-front";
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-
+            canvas.className = "dndx-visualcue-overlay " + styleClasses;
+            canvas.width = width || window.innerWidth;
+            canvas.height = height || window.innerHeight;
             ctx = canvas.getContext("2d");
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            rc = srcObj.getBoundingClientRect();
-            ctx.clearRect(rc.left, rc.top, rc.width, rc.height);
+            if (onCreated instanceof Function)
+                onCreated(ctx);
         }
-        ctx = ctx || canvas.getContext("2d");
-
-        $obj = $tgtObj;
-        for (i=0, c=$obj.length; i<c; ++i) {
-            rc = $obj[i].getBoundingClientRect();
-            ctx.clearRect(rc.left - padding, rc.top - padding, rc.width + padding*2, rc.height + padding*2);
-        }
+        return ctx || canvas.getContext("2d");
     }
 
-    function hideOverlay() {
-        var canvas = document.getElementById("dndx-visualcue-canvas");
+    function closeCanvas(id, delay) {
+        var canvas = document.getElementById(id);
         if (!canvas || canvas.hiding === "yes")
             return;
         canvas.hiding = "yes";
         canvas.style.opacity = 0;
         setTimeout(function() {
             canvas.parentNode.removeChild(canvas);
-        }, 300);
+        }, delay);
     }
 
-    function showUnderline($tgtObj) {
-        if (! $tgtObj || ! $tgtObj.length)
-            return;
-        var i, c = $tgtObj.length, rc, w, left, top, container = $("#dndx-visualcue-underline"), bar;
-        if (! container.length) 
-            container = $("<div id='dndx-visualcue-underline'>").appendTo($("body"));
-        for (i=0; i<c; ++i) {
-            rc = $tgtObj[i].getBoundingClientRect(), w = rc.width + 20, left = rc.left - 10, top = rc.bottom + 2;
-            bar = $("<span class='dndx-visualcue-underline dndx-bgclr-aqua ui-front'>").appendTo(container);
-            bar.width(w).offset({ top:top, left:left, });
+    function showOverlay($srcObj, $tgtObj) {
+        function onCanvasCreated(ctx) {
+            var canvas = ctx.canvas, rc = $srcObj[0].getBoundingClientRect();
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.clearRect(rc.left, rc.top, rc.width, rc.height);
+        }
+
+        var ctx = openCanvas("dndx-visualcue-canvas", "ui-front", null, null, onCanvasCreated), rc, i, c, padding = 5;
+
+        for (i=0, c=$tgtObj.length; i<c; ++i) {
+            rc = $tgtObj[i].getBoundingClientRect();
+            ctx.clearRect(rc.left - padding, rc.top - padding, rc.width + padding*2, rc.height + padding*2);
         }
     }
 
-    function hideUnderline() {
-        $("#dndx-visualcue-underline").remove();
+    function hideOverlay() {
+        closeCanvas("dndx-visualcue-canvas", 300);
     }
 
-    function showCurvedArrow($tgtObj) {
+    function hideObjectsById(id) {
+        $("#"+id).remove();
+    }
+
+    function showUnderline($tgtObj, id, styleClasses, paddingWidth, marginBottom) {
         if (! $tgtObj || ! $tgtObj.length)
             return;
-        var i, c = $tgtObj.length, rc, container = $("#dndx-visualcue-arrow"), arrow;
+        paddingWidth = paddingWidth || 20, marginBottom = marginBottom || 2;
+        styleClasses = "dndx-visualcue-underline " + styleClasses;
+        var i, c = $tgtObj.length, rc, w, left, top, container = $("#"+id), bar;
         if (! container.length) 
-            container = $("<div id='dndx-visualcue-arrow'>").appendTo($("body"));
+            container = $("<div id='" + id + "'>").appendTo($("body"));
+        for (i=0; i<c; ++i) {
+            rc = $tgtObj[i].getBoundingClientRect(), w = rc.width + paddingWidth, left = rc.left - paddingWidth*0.5, top = rc.bottom + marginBottom;
+            bar = $("<span class='" + styleClasses + "'>")
+                .width(w).offset({ top:top, left:left, }).appendTo(container);
+        }
+    }
+
+    function showCurvedArrow($tgtObj, id, styleClasses) {
+        if (! $tgtObj || ! $tgtObj.length)
+            return;
+        styleClasses = "dndx-visualcue-arrow " + styleClasses;
+        var i, c = $tgtObj.length, rc, container = $("#"+id), arrow;
+        if (! container.length) 
+            container = $("<div id='" + id + "'>").appendTo($("body"));
         for (i=0; i<c; ++i) {
             rc = $tgtObj[i].getBoundingClientRect();
-            arrow = $("<div class='dndx-visualcue-arrow ui-front'>").appendTo(container);
+            arrow = $("<div class='" + styleClasses + "'>").appendTo(container);
             arrow.offset({ top:rc.top, left:rc.left, });
         }
-    }
-
-    function hideCurvedArrow() {
-        $("#dndx-visualcue-arrow").remove();
     }
 
     var builtinVisualcueOwner = {
@@ -373,7 +382,7 @@ var dndx = null;
         visualcueOverlay : function(eventType, $srcObj, $tgtObj) {
             switch (eventType) {
             case "dropactivate":
-                showOverlay($srcObj[0], $tgtObj);
+                showOverlay($srcObj, $tgtObj);
                 break;
             case "dropdeactivate":
                 hideOverlay();
@@ -422,12 +431,13 @@ var dndx = null;
             }
         },
         visualcueUnderline : function(eventType, $srcObj, $tgtObj) {
+            var id = "dndx-visualcue-underline";
             switch (eventType) {
             case "dropactivate":
-                showUnderline($tgtObj);
+                showUnderline($tgtObj, id, "dndx-bgclr-aqua ui-front", 20, 2);
                 break;
             case "dropdeactivate":
-                hideUnderline();
+                hideObjectsById(id);
                 break;
             case "dropover": 
                 $tgtObj.addClass("dndx-visualcue-interior-red");
@@ -439,12 +449,13 @@ var dndx = null;
             }
         },
         visualcueArrow : function(eventType, $srcObj, $tgtObj) {
+            var id = "dndx-visualcue-arrow";
             switch (eventType) {
             case "dropactivate":
-                showCurvedArrow($tgtObj);
+                showCurvedArrow($tgtObj, id, "ui-front");
                 break;
             case "dropdeactivate":
-                hideCurvedArrow();
+                hideObjectsById(id);
                 break;
             case "dropover": 
                 $tgtObj.addClass("dndx-visualcue-exterior-aqua");
@@ -932,12 +943,13 @@ var dndx = null;
 
     dndx.destroy = cleanup;
 
+    dndx.openCanvas = openCanvas;
+    dndx.closeCanvas = closeCanvas;
     dndx.showOverlay = showOverlay;
     dndx.hideOverlay = hideOverlay;
+    dndx.hideObjectsById = hideObjectsById;
     dndx.showUnderline = showUnderline;
-    dndx.hideUnderline = hideUnderline;
     dndx.showCurvedArrow = showCurvedArrow;
-    dndx.hideCurvedArrow = hideCurvedArrow;
 
     dndx.forEachPair = function(cb) {
         forEachPair(dataStore.pairs, cb);

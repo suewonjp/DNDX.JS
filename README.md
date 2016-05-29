@@ -29,8 +29,15 @@ Import _css/dndx.css_ and _js/dndx.js_ file into your HTML file like so:
 
     <script src="js/dndx.js"></script>
 
+You can use the library like so (almost every method call is chainable):
+
+    // For a pair of ".draggable", ".droppable"
+    // where ".draggable" is a CSS selector for source objects,
+    // and ".droppable" is a CSS selector for target objects.
     dndx(".draggable", ".droppable")
-        .visualcue("Exterior")
+        // Apply "Exterior" built-in visual cue
+        .visualcue("Exterior") 
+        // And set callbacks for various events
         .onstart(onStartCallback)
         .onconflict(onConflictCallback)
         .onover(onOverCallback)

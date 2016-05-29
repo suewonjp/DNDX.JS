@@ -62,8 +62,8 @@ See the API References for more details
  - One of "dropactivate", "dropdeactivate", "dropover", "dropout", "drop"
  - When you reuse a single callback for all events, you can refer to this parameter to identify the current event type.
  - Don't bother if you use a separate callback for each event.
-- $srcObj : A jQuery object for the source
-- $tgtObj : A jQuery object for the target
+- $srcObj : A jQuery object for the source 
+- $tgtObj : A jQuery object for the targets
 - etc : An object keeping other non-essential parameters
  - srcSelector : source selector string for the pair
  - tgtSelector : target selector string for the pair
@@ -142,9 +142,9 @@ Notice that this method is meant to be called at Source Group Level or Pair Leve
     - dndx(".draggable", ".trash").ondrop(onTrash);
 
 ###### .draggableOptions(options)
-Sets jQuery UI Draggable options. Refer to [this page](http://api.jqueryui.com/draggable/) about which option you can specify.
+Sets jQuery UI Draggable options. The existing options will be merged with the options contained within the parameter _options_ (which is a JavaScript object).  Refer to [this page](http://api.jqueryui.com/draggable/) about which option you can specify.
 ###### .droppableOptions(options)
-Sets jQuery UI Droppable options. Refer to [this page](http://api.jqueryui.com/droppable/) about which option you can specify.
+Sets jQuery UI Droppable options. The existing options will be merged with the options contained within the parameter _options_ (which is a JavaScript object).  Refer to [this page](http://api.jqueryui.com/droppable/) about which option you can specify.
 
 Notice that calling this method for Source Group Level will have no effect. 
 ###### .visualcue(param)
@@ -167,7 +167,7 @@ See this [Wiki topic](https://github.com/suewonjp/DNDX.JS/wiki/Visual-Cues) to u
 - If you need a custom visual effect, implement a callback for that and pass it in as param. See the example code below.  
  - See [events](#events) for callback signature.
 
-An example callback of custom visual cue behavior:
+An example callback of custom visual cue behavior: ( Parameters for the callback is the same as other event callbacks. See the [event section](#events) for detail.
 
             function visualcue(eventType, $srcObj, $tgtObj) {
                 switch (eventType) {
@@ -334,4 +334,7 @@ Like .remove(), this method returns nothing, which means another method can't be
 
 ###### dndx.destroy()
 Does the same thing as .destroy(), but it doesn't nned to be chained to dndx() call.
+
+* * *
+[And DNDX.JS has other utility methods](https://github.com/suewonjp/DNDX.JS/blob/master/misc-docs.md)
 
