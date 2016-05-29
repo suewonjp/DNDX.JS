@@ -83,22 +83,31 @@ var dndx = null;
         };
     }
 
-    //function forEachPair(pairs, cb) {
-        //for (var srcSelector in pairs) {
-            //for (var tgtSelector in pairs[srcSelector]) {
-                //cb(pairs[srcSelector][tgtSelector]);
-            //}
-        //}
-    //}
+    function makeCallableAnyway(f, df) {
+        df = df || noop;
+        return (f instanceof Function && f) || df;
+    }
+
+    function forEachPair(pairs, cb) {
+        if (cb instanceof Function === false)
+            return;
+        for (var srcSelector in pairs) {
+            for (var tgtSelector in pairs[srcSelector]) {
+                cb(srcSelector, tgtSelector, pairs[srcSelector][tgtSelector]);
+            }
+        }
+    }
 
     function forEachSelector(pairs, cbForSrc, cbForTgt) {
         var tgtSet = {};
+        cbForSrc = makeCallableAnyway(cbForSrc);
+        cbForTgt = makeCallableAnyway(cbForTgt);
         for (var srcSelector in pairs) {
             cbForSrc(srcSelector);
             for (var tgtSelector in pairs[srcSelector]) {
                 if (tgtSelector in tgtSet === false) {
                     tgtSet[tgtSelector] = true;
-                    cbForTgt(srcSelector, tgtSelector);
+                    cbForTgt(tgtSelector);
                 }
             }
         }
@@ -214,7 +223,7 @@ var dndx = null;
         return $obj;
     }
 
-    function refreshDroppable(srcSelector, tgtSelector, options) {
+    function refreshDroppable(tgtSelector, options) {
         var $obj = $(tgtSelector), instance = $obj.droppable("instance"),
             finalOptions = extendDroppableOptions(instance ? instance.options : {}, options);
         constructDroppable($obj, finalOptions);
@@ -223,7 +232,7 @@ var dndx = null;
 
     function refreshPair(srcSelector, tgtSelector, pair) { 
         refreshDraggable(srcSelector).css("cursor", pair.cursorForHover);
-        refreshDroppable(srcSelector, tgtSelector);
+        refreshDroppable(tgtSelector);
     }
 
     function refreshPairs(pairs) {
@@ -231,8 +240,8 @@ var dndx = null;
             var srcSettings = pairs[srcSelector][srcClassName];
             refreshDraggable(srcSelector, dataStore.protoDraggableOptions)
                 .css("cursor", srcSettings.cursorForHover);
-        }, function(srcSelector, tgtSelector) {
-            refreshDroppable(srcSelector, tgtSelector, dataStore.protoDroppableOptions);
+        }, function(tgtSelector) {
+            refreshDroppable(tgtSelector, dataStore.protoDroppableOptions);
         });
     }
 
@@ -289,74 +298,83 @@ var dndx = null;
         }
     }
 
-    function showOverlay(srcObj, $tgtObj) {
-        var id = "dndx-visualcue-canvas", canvas = document.getElementById(id),
-            ctx, i, c, $obj, rc, padding = 5;
+    function openCanvas(id, styleClasses, width, height, onCreated) {
+        var canvas = document.getElementById(id), ctx;
         if (!canvas) {
             canvas = document.createElement("canvas");
             document.body.appendChild(canvas);
             canvas.id = id;
-            canvas.className = "dndx-visualcue-overlay ui-front";
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-
+            canvas.className = "dndx-visualcue-overlay " + styleClasses;
+            canvas.width = width || window.innerWidth;
+            canvas.height = height || window.innerHeight;
             ctx = canvas.getContext("2d");
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            rc = srcObj.getBoundingClientRect();
-            ctx.clearRect(rc.left, rc.top, rc.width, rc.height);
+            if (onCreated instanceof Function)
+                onCreated(ctx);
         }
-        ctx = ctx || canvas.getContext("2d");
-
-        $obj = $tgtObj;
-        for (i=0, c=$obj.length; i<c; ++i) {
-            rc = $obj[i].getBoundingClientRect();
-            ctx.clearRect(rc.left - padding, rc.top - padding, rc.width + padding*2, rc.height + padding*2);
-        }
+        return ctx || canvas.getContext("2d");
     }
 
-    function hideOverlay() {
-        var canvas = document.getElementById("dndx-visualcue-canvas");
+    function closeCanvas(id, delay) {
+        var canvas = document.getElementById(id);
         if (!canvas || canvas.hiding === "yes")
             return;
         canvas.hiding = "yes";
         canvas.style.opacity = 0;
         setTimeout(function() {
             canvas.parentNode.removeChild(canvas);
-        }, 300);
+        }, delay);
     }
 
-    function showUnderline($tgtObj) {
-        if (! $tgtObj || ! $tgtObj.length)
-            return;
-        var i, c = $tgtObj.length, rc, w, left, top, container = $("#dndx-visualcue-underline"), bar;
-        if (! container.length) 
-            container = $("<div id='dndx-visualcue-underline'>").appendTo($("body"));
-        for (i=0; i<c; ++i) {
-            rc = $tgtObj[i].getBoundingClientRect(), w = rc.width + 20, left = rc.left - 10, top = rc.bottom + 2;
-            bar = $("<span class='dndx-visualcue-underline dndx-bgclr-aqua ui-front'>").appendTo(container);
-            bar.width(w).offset({ top:top, left:left, });
+    function showOverlay($srcObj, $tgtObj) {
+        function onCanvasCreated(ctx) {
+            var canvas = ctx.canvas, rc = $srcObj[0].getBoundingClientRect();
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.clearRect(rc.left, rc.top, rc.width, rc.height);
+        }
+
+        var ctx = openCanvas("dndx-visualcue-canvas", "ui-front", null, null, onCanvasCreated), rc, i, c, padding = 5;
+
+        for (i=0, c=$tgtObj.length; i<c; ++i) {
+            rc = $tgtObj[i].getBoundingClientRect();
+            ctx.clearRect(rc.left - padding, rc.top - padding, rc.width + padding*2, rc.height + padding*2);
         }
     }
 
-    function hideUnderline() {
-        $("#dndx-visualcue-underline").remove();
+    function hideOverlay() {
+        closeCanvas("dndx-visualcue-canvas", 300);
     }
 
-    function showCurvedArrow($tgtObj) {
+    function hideObjectsById(id) {
+        $("#"+id).remove();
+    }
+
+    function showUnderline($tgtObj, id, styleClasses, paddingWidth, marginBottom) {
         if (! $tgtObj || ! $tgtObj.length)
             return;
-        var i, c = $tgtObj.length, rc, container = $("#dndx-visualcue-arrow"), arrow;
+        paddingWidth = paddingWidth || 20, marginBottom = marginBottom || 2;
+        styleClasses = "dndx-visualcue-underline " + styleClasses;
+        var i, c = $tgtObj.length, rc, w, left, top, container = $("#"+id), bar;
         if (! container.length) 
-            container = $("<div id='dndx-visualcue-arrow'>").appendTo($("body"));
+            container = $("<div id='" + id + "'>").appendTo($("body"));
+        for (i=0; i<c; ++i) {
+            rc = $tgtObj[i].getBoundingClientRect(), w = rc.width + paddingWidth, left = rc.left - paddingWidth*0.5, top = rc.bottom + marginBottom;
+            bar = $("<span class='" + styleClasses + "'>")
+                .width(w).offset({ top:top, left:left, }).appendTo(container);
+        }
+    }
+
+    function showCurvedArrow($tgtObj, id, styleClasses) {
+        if (! $tgtObj || ! $tgtObj.length)
+            return;
+        styleClasses = "dndx-visualcue-arrow " + styleClasses;
+        var i, c = $tgtObj.length, rc, container = $("#"+id), arrow;
+        if (! container.length) 
+            container = $("<div id='" + id + "'>").appendTo($("body"));
         for (i=0; i<c; ++i) {
             rc = $tgtObj[i].getBoundingClientRect();
-            arrow = $("<div class='dndx-visualcue-arrow ui-front'>").appendTo(container);
+            arrow = $("<div class='" + styleClasses + "'>").appendTo(container);
             arrow.offset({ top:rc.top, left:rc.left, });
         }
-    }
-
-    function hideCurvedArrow() {
-        $("#dndx-visualcue-arrow").remove();
     }
 
     var builtinVisualcueOwner = {
@@ -364,7 +382,7 @@ var dndx = null;
         visualcueOverlay : function(eventType, $srcObj, $tgtObj) {
             switch (eventType) {
             case "dropactivate":
-                showOverlay($srcObj[0], $tgtObj);
+                showOverlay($srcObj, $tgtObj);
                 break;
             case "dropdeactivate":
                 hideOverlay();
@@ -413,12 +431,13 @@ var dndx = null;
             }
         },
         visualcueUnderline : function(eventType, $srcObj, $tgtObj) {
+            var id = "dndx-visualcue-underline";
             switch (eventType) {
             case "dropactivate":
-                showUnderline($tgtObj);
+                showUnderline($tgtObj, id, "dndx-bgclr-aqua ui-front", 20, 2);
                 break;
             case "dropdeactivate":
-                hideUnderline();
+                hideObjectsById(id);
                 break;
             case "dropover": 
                 $tgtObj.addClass("dndx-visualcue-interior-red");
@@ -430,12 +449,13 @@ var dndx = null;
             }
         },
         visualcueArrow : function(eventType, $srcObj, $tgtObj) {
+            var id = "dndx-visualcue-arrow";
             switch (eventType) {
             case "dropactivate":
-                showCurvedArrow($tgtObj);
+                showCurvedArrow($tgtObj, id, "ui-front");
                 break;
             case "dropdeactivate":
-                hideCurvedArrow();
+                hideObjectsById(id);
                 break;
             case "dropover": 
                 $tgtObj.addClass("dndx-visualcue-exterior-aqua");
@@ -463,11 +483,10 @@ var dndx = null;
         apiOwner = dataStore = null;
     }
 
-    // This function defines all APIs (except dndx() function) for the library and associates them to the object 'apiOwner'
+    // This function defines all chainable methods for the library
     function defineAPIs() {
-        apiOwner = {}; // This object owns all public functions of the library
+        apiOwner = {}; // This object owns all public chainable methods of the library
 
-        // CHAINABLE METHODS
         apiOwner.targets = function(tgtSelector) {
             validateSelector(tgtSelector);
             if (!this.srcSelector) {
@@ -489,8 +508,8 @@ var dndx = null;
             return this;
         };
         apiOwner.droppableOptions = function(options) {
-            if (this.srcSelector && this.tgtSelector) {
-                refreshDroppable(this.srcSelector, this.tgtSelector, options);
+            if (this.tgtSelector) {
+                refreshDroppable(this.tgtSelector, options);
             }
             else {
                 extendDroppableOptions(dataStore.protoDroppableOptions, options);
@@ -615,9 +634,7 @@ var dndx = null;
                 this.source[srcClassName].disabled = b;
             }
             else {
-                forEachSelector(this.pairs, function(srcSelector) {
-                    delete this.pairs[srcSelector][srcClassName].disabled;
-                }, function(srcSelector, tgtSelector) {
+                forEachPair(this.pairs, function(srcSelector, tgtSelector) {
                     delete this.pairs[srcSelector][tgtSelector].disabled;
                 });
                 dataStore.protoPair.disabled = b;
@@ -643,7 +660,6 @@ var dndx = null;
             return this;
         };
 
-        // NON CHAINABLE METHODS
         apiOwner.remove = function(removeUnderlingObjects) {
             removePair(this.srcSelector, this.tgtSelector, removeUnderlingObjects);
         };
@@ -926,6 +942,21 @@ var dndx = null;
     }; 
 
     dndx.destroy = cleanup;
+
+    dndx.openCanvas = openCanvas;
+    dndx.closeCanvas = closeCanvas;
+    dndx.showOverlay = showOverlay;
+    dndx.hideOverlay = hideOverlay;
+    dndx.hideObjectsById = hideObjectsById;
+    dndx.showUnderline = showUnderline;
+    dndx.showCurvedArrow = showCurvedArrow;
+
+    dndx.forEachPair = function(cb) {
+        forEachPair(dataStore.pairs, cb);
+    };
+    dndx.forEachSelector = function(cbForSrc, cbForTgt) {
+        forEachSelector(dataStore.pairs, cbForSrc, cbForTgt);
+    };
 
 }(jQuery));
 
