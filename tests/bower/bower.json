@@ -1,0 +1,19 @@
+{
+  "name": "bower-test",
+  "authors": [
+    "suewonjp <suewonjp@gmail.com>"
+  ],
+  "description": "",
+  "main": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+      "dndx.js": "*"
+  }
+}
