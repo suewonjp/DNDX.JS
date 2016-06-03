@@ -1,0 +1,6 @@
+*.html
+spec/
+demo/
+tests/
+trashcan/
+
