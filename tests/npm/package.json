@@ -1,0 +1,11 @@
+{
+  "name": "npm-pkg-test",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Suewon Bahng <suewonjp@gmail.com>",
+  "license": "ISC"
+}
