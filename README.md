@@ -43,6 +43,13 @@ You can use the library like so (almost every method call is chainable):
         .onover(onOverCallback)
         .ondrop(onDropCallback);
 
+### LINKS
+- [Demo](http://suewonjp.github.io/DNDX.JS/)
+- [API Documentation](https://github.com/suewonjp/DNDX.JS/blob/master/api-docs.md)
+- [Wiki](https://github.com/suewonjp/DNDX.JS/wiki)
+- [DNDX.JS at Custom Elements](https://customelements.io/suewonjp/DNDX.JS/)
+- [DNDX.JS at NPM](https://www.npmjs.com/package/dndx.js)
+
 ### COPYRIGHT/LICENSE/DISCLAIMER
 
     Copyright (c) 2016 Suewon Bahng, suewonjp@gmail.com
