@@ -304,9 +304,14 @@ describe("DNDX-CORE", function() {
             jasmine.createSamplePairs(src, tgt);
 
             dndx.forEachPair(function(srcSelector, tgtSelector) {
-                var idx = pairs.findIndex(function(el) {
-                    return el[0] === srcSelector && el[1] === tgtSelector;
-                });
+                var idx = -1, i, c, el;
+                for (i=0, c=pairs.length; i<c; ++i) {
+                    el = pairs[i];
+                    if (el[0] === srcSelector && el[1] === tgtSelector) {
+                        idx = i;
+                        break;
+                    }
+                }
                 expect(idx).toBeGreaterThan(-1);
                 pairs.splice(idx, 1);
             });

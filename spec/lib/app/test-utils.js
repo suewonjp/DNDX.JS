@@ -107,10 +107,14 @@ TEST_UTILS.sorted = function(arr, descending, comparator) {
 };
 
 TEST_UTILS.unique = function(arr) {
-    if (!arr)
+    if (!arr || arr instanceof Set)
         return true;
-    var len = arr.length || arr.size || 0;
-    return (new Set(arr)).size === len;
+    var len = arr.length;
+    for (var i=1; i<len; ++i) {
+        if (arr[i - 1] == arr[i])
+            return false;
+    }
+    return true;
 };
 
 TEST_UTILS.objectsEqual = function(obj0, obj1, strict) {
@@ -255,12 +259,12 @@ describe("TEST_UTILS", function() {
             expect(TEST_UTILS.unique()).toBe(true);
             expect(TEST_UTILS.unique(null)).toBe(true);
             expect(TEST_UTILS.unique([])).toBe(true);
-            expect(TEST_UTILS.unique(new Set())).toBe(true);
+            //expect(TEST_UTILS.unique(new Set())).toBe(true);
         });
 
-        it("works on Sets", function() {
-            expect(TEST_UTILS.unique(new Set([0, 1, 2, 2,]))).toBe(true);
-        });
+        //it("works on Sets", function() {
+            //expect(TEST_UTILS.unique(new Set([0, 1, 2, 2,]))).toBe(true);
+        //});
 
         it("works on Arrays", function() {
             expect(TEST_UTILS.unique([0,])).toBe(true);
