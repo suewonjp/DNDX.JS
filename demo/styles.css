@@ -47,7 +47,8 @@ pre {
 }
 
 #intro .animation .fa-trash {
-    margin: auto;
+    position: absolute;
+    top: 45%;
 }
 
 #intro .animation .fa-envelope {
@@ -145,6 +146,7 @@ pre {
 
 .flex-container > div {
     width: 25%;
+    position: relative;
 }
 
 .trashcan-container {
@@ -152,7 +154,9 @@ pre {
 }
 
 .trashcan-container .fa {
-    margin: auto;
+    position: absolute;
+    top: 50%;
+    left: 50%;
 }
 
 .pl-list-container {
