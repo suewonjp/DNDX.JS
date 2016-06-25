@@ -142,7 +142,7 @@ function enterBasicDemoScene($, $panel) {
     //
     dndx()
         //.draggableOptions({ helper: "clone", })
-        .visualcue($("#basic-visualcue-menu")[0].selectedOptions[0].text)
+        .visualcue("Overlay")
         .oncheckpair(onCheckPair)
         .onconflict(onConflict)
         .ondrop(onDrop);
