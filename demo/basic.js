@@ -1,6 +1,27 @@
 /*eslint no-undef:0*/
 /*eslint no-unused-vars:0*/
 
+//
+// CONFLICT EVENT HANDLER
+//
+// -- Will be called whenever two objects are competing for interaction with the source
+//
+function onConflictForBasicDemoScene($srcObj, $tgtObj0, $tgtObj1) {
+    var arr = [ $tgtObj0, $tgtObj1, ], i;
+    for (i=0; i<2; ++i) {
+        // We give highest priority for the <p> element on the dialog
+        if (arr[i].is("#basic-dialog p"))
+            return arr[i];
+    }
+    for (i=0; i<2; ++i) {
+        // We give the 2nd highest for the dialog itself 
+        if (arr[i].is(".ui-dialog"))
+            return arr[i];
+    }
+    // "First come, first served" for others
+    return $tgtObj0;
+}
+
 function createBasicDemoScene($) {
     $("#basic-new-src-btn").button().on("click", function() {
         var draggables = $(".draggable"), newId = draggables.length;
@@ -33,12 +54,13 @@ function createBasicDemoScene($) {
         })
         .find("input").on("click", function(e) {
             if ($(e.target).prop("checked")) {
-                // Fallback to the default (NOT SMART, RANDOM) behavior of conflict resolution
+                // Fallback to the default (NOT SMART, RANDOM) behavior of conflict resolution.
+                // In this mode, the outcome behavior is quite unstable.
                 dndx().onconflict();
             }
             else {
                 // Restore the DESIRABLE conflict resolution
-                dndx().onconflict(onConflict);
+                dndx().onconflict(onConflictForBasicDemoScene);
             }
         })
         ;
@@ -103,27 +125,6 @@ function enterBasicDemoScene($, $panel) {
     }
 
     //
-    // CONFLICT EVENT HANDLER
-    //
-    // -- Will be called whenever two objects are competing for interaction with the source
-    //
-    function onConflict($srcObj, $tgtObj0, $tgtObj1) {
-        var arr = [ $tgtObj0, $tgtObj1, ], i;
-        for (i=0; i<2; ++i) {
-            // We give highest priority for the <p> element on the dialog
-            if (arr[i].is("#basic-dialog p"))
-                return arr[i];
-        }
-        for (i=0; i<2; ++i) {
-            // We give the 2nd highest for the dialog itself 
-            if (arr[i].is(".ui-dialog"))
-                return arr[i];
-        }
-        // "First come, first served" for others
-        return $tgtObj0;
-    }
-
-    //
     // PAIR CHECKING EVENT HANDLER
     //
     // -- Will be called whenever a pair of (source/target) objects is detected.
@@ -144,7 +145,7 @@ function enterBasicDemoScene($, $panel) {
         //.draggableOptions({ helper: "clone", })
         .visualcue("Overlay")
         .oncheckpair(onCheckPair)
-        .onconflict(onConflict)
+        .onconflict(onConflictForBasicDemoScene)
         .ondrop(onDrop);
 
     var dlg = $("#basic-dialog");

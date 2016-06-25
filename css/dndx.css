@@ -60,7 +60,7 @@ Also visit https://github.com/suewonjp/DNDX.JS
 }
 
 .dndx-visualcue-underline {
-    position: fixed;
+    position: fixed!important;
     height: 6px;
     border-radius: 3px;
 }
