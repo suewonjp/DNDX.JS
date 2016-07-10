@@ -1,6 +1,6 @@
 {
   "name": "dndx.js",
-  "version": "0.5.0-beta.0",
+  "version": "0.5.0-beta.1",
   "description": "A Javascript library enhancing High Level of Drag & Drop User Inferface interactions for your web page",
   "main": "js/dndx.js", 
   "directories": {},
@@ -12,13 +12,22 @@
     "url": "https://github.com/suewonjp/DNDX.JS"
   },
   "keywords": [
+    "web-components",
+    "drag and drop",
     "javascript",
-    "drag and drop"
+    "browser",
+    "library",
+    "jquery",
+    "jquery ui"
   ],
   "author": "Suewon Bahng <suewonjp@gmail.com>",
   "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/suewonjp/DNDX.JS/issues"
   },
-  "homepage": "https://github.com/suewonjp/DNDX.JS"
+  "homepage": "https://github.com/suewonjp/DNDX.JS",
+  "dependencies": {
+      "jquery": ">=1.12.0",
+      "jquery.ui": ">=1.11.4"
+  }
 }
