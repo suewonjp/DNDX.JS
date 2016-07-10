@@ -1,6 +1,11 @@
-*.html
+**/.*
 spec/
-demo/
 tests/
+demo/
+node_modules/
+bower_components/
 trashcan/
+*.txt
+*.md
+*.html
 
