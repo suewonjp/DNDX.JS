@@ -1,6 +1,6 @@
 {
   "name": "dndx.js",
-  "version": "0.5.0-beta.3",
+  "version": "0.5.0-beta.4",
   "description": "A Javascript library enhancing High Level of Drag & Drop User Inferface interactions for your web page",
   "main": "js/dndx.js", 
   "directories": {},
