@@ -1,6 +1,10 @@
 Copyright (c) 2016 Suewon Bahng, suewonjp@gmail.com
 
-Last Updated (2016-06-03)
+Last Updated (2016-07-10)
+
+## Version 0.5.0-beta.1 (2016-07-10)
+- Updated package info for Bowel and NPM
+- Updated title and meta description for the demo page
 
 ## Version 0.5.0-beta.0 (2016-06-02)
 - First Release.
